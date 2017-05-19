@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -17,22 +18,43 @@ namespace SI_Projekt
             this.children = new Nodev2[27];
         }
 
-        public void createGraph() {
+
+        public void createGraph(int depth) {
             this.children = createChildren();
+            if (depth == 0) return;
             foreach (Nodev2 child in this.children)
-                child.children = createChildren();
+                child.createGraph(depth - 1);
+        }
+        
+
+        public void teach(int level, string path = @"WordList.txt") {
+            try {
+                string[] words = System.IO.File.ReadAllLines(Path.GetFullPath(path));
+                foreach (string word in words)
+                    teachNewWord(word, level);
+            }
+            catch (IOException e) {
+                Console.Error.WriteLine("Can't find file");
+            }
         }
 
-        public void teach() {
-            string[] words = System.IO.File.ReadAllLines(
-                @"C:\Users\Klient\Documents\Visual Studio 2015\Projects\SI_Projekt\SI_Projekt\WordList.txt");
-            foreach (string word in words)
-                teachNewWord(word, 0);
-        }
-
-        public string generateNewWord() {
+        public string generateNewWord(int level) {
             string result = "";
-            Random rand = new Random();
+            switch (level) {
+                case 1:
+                    while (result.Length < 3)
+                        result = generateNewWordLevel1();
+                    break; 
+                case 2:
+                    while (result.Length < 3)
+                        result = generateNewWordLevel2();
+                    break;
+            }
+            return result;
+        }
+        
+        private string generateNewWordLevel1() {
+            string result = "";
             int index, lastLetter = 0;
             int lengthOfWord = rand.Next(3, 12);
             int missesCounter = 0;
@@ -55,26 +77,73 @@ namespace SI_Projekt
             }
         }
 
-        private void teachNewWord(string word, int letterPointer) {
-            int lastLetter = 0;
-            while(word.Length > letterPointer) {
-                for (int i = 0; i < 27; i++)
-                    this.children[i].total++;
+        private string generateNewWordLevel2() {
+            string result = "";
+            int lastLetter = 0, prelastLetter = 0, index = 0;
+            int wordLength = rand.Next(3, 12);
+            int missesCounter = 0;
 
-                if (letterPointer != 0){
-                    for (int i = 0; i < 27; i++)
-                        this.children[lastLetter].children[i].total++;
-                    if (word[letterPointer] >= 'A' && word[letterPointer] <= 'Z')
-                        this.children[lastLetter].children[word[letterPointer] - 0x41].counter++;
-                    else if (word[letterPointer] >= 'a' && word[letterPointer] <= 'z')
-                        this.children[lastLetter].children[word[letterPointer] - 0x61].counter++;
+            while (true) {
+                index = rand.Next(0, 25);
+                if (result.Length > 1) {
+                    if ((double)this.children[prelastLetter].children[lastLetter].children[index].counter
+                        / this.children[prelastLetter].children[lastLetter].counter > 0.06)
+                        result += this.children[prelastLetter].children[lastLetter].children[index].letter;
+                    else {
+                        if (++missesCounter > 100) return result;
+                        continue;
+                    }
+                }
+                else if (result.Length == 1) {
+                    if ((double)this.children[lastLetter].children[index].counter / this.children[lastLetter].counter > 0.06)
+                        result += this.children[lastLetter].children[index].letter;
+                    else {
+                        if (++missesCounter > 50) return result;
+                        continue;
+                    }
+                }
+                else
+                    result += this.children[index].letter;
+
+                if (result.Length == wordLength)
+                    return result;
+                missesCounter = 0;
+                prelastLetter = lastLetter;
+                lastLetter = index;
+            }
+            
+        }
+
+        private void teachNewWord(string word, int level) {
+            switch (level){
+                case 1:
+                    teachNewWordLevel1(word);
+                    break;
+                case 2:
+                    teachNewWordLevel2(word);
+                    break;
+            }
+        }
+
+        private void teachNewWordLevel1(string word) {
+            int lastLetter = 0, actLetter = 0;
+            int letterPointer = 0;
+            while(word.Length > letterPointer) {
+                for (int i = 0; i < 27; this.children[i++].total++);
+
+                actLetter = calculateIndex(word[letterPointer]);
+                if(actLetter > 26) {
+                    letterPointer++;
+                    continue;
                 }
 
-                if (word[letterPointer] >= 'A' && word[letterPointer] <= 'Z')
-                    lastLetter = word[letterPointer] - 0x41;
-                else if (word[letterPointer] >= 'a' && word[letterPointer] <= 'z')
-                    lastLetter = word[letterPointer] - 0x61;
+                if (letterPointer != 0){
+                    for (int i = 0; i < 27; this.children[lastLetter].children[i++].total++);
+                        
+                    this.children[lastLetter].children[actLetter].counter++;
+                }
 
+                lastLetter = actLetter;
                 this.children[lastLetter].counter++;
 
                 letterPointer++;
@@ -89,6 +158,50 @@ namespace SI_Projekt
             this.children[lastLetter].children[26].counter++;
         }
 
+        private void teachNewWordLevel2(string word) {
+            int lastLetter = 0, preLastLetter = 0, actLetter = 0;
+            int letterPointer = 0;
+
+            while (word.Length > letterPointer) {
+
+                actLetter = calculateIndex(word[letterPointer]);
+                if (actLetter > 26) {
+                    letterPointer++;
+                    continue;
+                }
+
+                for (int i = 0; i < 27; this.children[i++].total++);
+
+                if (letterPointer > 1){
+                    for (int i = 0; i < 27; this.children[preLastLetter].children[lastLetter].children[i++].total++);
+
+                    this.children[preLastLetter].children[lastLetter].children[actLetter].counter++;
+                }
+
+                if (letterPointer != 0){
+                    for (int i = 0; i < 27; this.children[lastLetter].children[i++].total++);
+                        
+                    this.children[lastLetter].children[actLetter].counter++;
+                    
+                    preLastLetter = lastLetter;
+                }
+                
+                lastLetter = actLetter;
+                this.children[lastLetter].counter++;
+                letterPointer++;
+            }
+        }
+
+        private int calculateIndex(char letter) {
+            if (letter >= 'A' && letter <= 'Z')
+                return letter - 0x41;
+            else if (letter >= 'a' && letter <= 'z')
+                return letter - 0x61;
+            else if (letter == '\0')
+                return 26;
+            return (int)letter;
+        }
+
         private Nodev2[] createChildren() {
             Nodev2[] children = new Nodev2[27];
             for (int i = 0; i < 27; i++) {
@@ -100,9 +213,11 @@ namespace SI_Projekt
             return children;
         }
 
-        private char letter { get; }
-        private int total { get; set; }
-        private int counter { get; set; }
-        private Nodev2[] children { get; set; }
+        private Random rand = new Random();
+
+        public char letter { get; }
+        public int total { get; set; }
+        public int counter { get; set; }
+        public Nodev2[] children { get; set; }
     }
 }

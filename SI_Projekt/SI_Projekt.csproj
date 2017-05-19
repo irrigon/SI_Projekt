@@ -43,6 +43,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="HiddenNode.cs" />
     <Compile Include="Node.cs" />
     <Compile Include="Nodev2.cs" />
     <Compile Include="Program.cs" />
