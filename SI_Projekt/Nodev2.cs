@@ -19,15 +19,23 @@ namespace SI_Projekt
         }
 
 
+        public void showFreq() {
+            foreach (Nodev2 child in children)
+                Console.WriteLine(
+                    "{0} = {1}/{2} = {3}", child.letter,
+                    child.counter, child.total, (double)child.counter / child.total);
+        }
+
         public void createGraph(int depth) {
             this.children = createChildren();
-            if (depth == 0) return;
+            if (depth == 0)
+                return;
             foreach (Nodev2 child in this.children)
                 child.createGraph(depth - 1);
         }
         
 
-        public void teach(int level, string path = @"WordList5000.txt") {
+        public void teach(int level, string path = "WordList5000.txt") {
             try {
                 string[] words = System.IO.File.ReadAllLines(Path.GetFullPath(path));
                 
@@ -82,10 +90,12 @@ namespace SI_Projekt
                 }
                 else
                     result += children[index].letter;
-                missesCounter = 0;
-                lastLetter = index;
+
                 if (result.Length == lengthOfWord)
                     return result;
+
+                missesCounter = 0;
+                lastLetter = index;
             }
         }
 
@@ -99,8 +109,8 @@ namespace SI_Projekt
             while (true) {
                 index = rand.Next(0, 25);
                 if (result.Length > 1) {
-                    if ((double)this.children[prelastLetter].children[lastLetter].children[index].counter
-                        / this.children[prelastLetter].children[lastLetter].counter > 0.06)
+                    if ((double)this.children[prelastLetter].children[lastLetter].children[index].counter / 
+                        this.children[prelastLetter].children[lastLetter].counter > 0.06)
                         result += this.children[prelastLetter].children[lastLetter].children[index].letter;
                     else {
                         if (++missesCounter > 100) return result;
@@ -108,7 +118,8 @@ namespace SI_Projekt
                     }
                 }
                 else if (result.Length == 1) {
-                    if ((double)this.children[lastLetter].children[index].counter / this.children[lastLetter].counter > 0.06)
+                    if ((double)this.children[lastLetter].children[index].counter /
+                        this.children[lastLetter].counter > 0.06)
                         result += this.children[lastLetter].children[index].letter;
                     else {
                         if (++missesCounter > 50) return result;
@@ -120,6 +131,7 @@ namespace SI_Projekt
 
                 if (result.Length == wordLength)
                     return result;
+
                 missesCounter = 0;
                 prelastLetter = lastLetter;
                 lastLetter = index;
@@ -186,7 +198,8 @@ namespace SI_Projekt
                 for (int i = 0; i < 27; this.children[i++].total++);
 
                 if (letterPointer > 1){
-                    for (int i = 0; i < 27; this.children[preLastLetter].children[lastLetter].children[i++].total++);
+                    for (int i = 0; i < 27; 
+                        this.children[preLastLetter].children[lastLetter].children[i++].total++);
 
                     this.children[preLastLetter].children[lastLetter].children[actLetter].counter++;
                 }
@@ -203,6 +216,7 @@ namespace SI_Projekt
                 this.children[lastLetter].counter++;
                 letterPointer++;
             }
+            
         }
 
         private int calculateIndex(char letter) {

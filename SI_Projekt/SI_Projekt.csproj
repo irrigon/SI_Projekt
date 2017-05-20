@@ -54,6 +54,7 @@
   <ItemGroup>
     <Compile Include="HiddenNode.cs" />
     <Compile Include="Node.cs" />
+    <Compile Include="NodePl.cs" />
     <Compile Include="Nodev2.cs" />
     <Compile Include="Poem.cs" />
     <Compile Include="Program.cs" />
