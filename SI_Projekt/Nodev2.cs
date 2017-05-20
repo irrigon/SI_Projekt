@@ -27,7 +27,7 @@ namespace SI_Projekt
         }
         
 
-        public void teach(int level, string path = @"WordList.txt") {
+        public void teach(int level, string path = @"WordList5000.txt") {
             try {
                 string[] words = System.IO.File.ReadAllLines(Path.GetFullPath(path));
                 
@@ -66,7 +66,9 @@ namespace SI_Projekt
         private string generateNewWordLevel1() {
             string result = "";
             int index, lastLetter = 0;
-            int lengthOfWord = rand.Next(3, 12);
+            int lengthOfWord = 3;// = rand.Next(3, 12);
+            
+            for (double prob = 0.3; prob < rand.NextDouble(); lengthOfWord++, prob += 0.08) ;
             int missesCounter = 0;
             while (true) {
                 index = rand.Next(0, 25);
@@ -90,7 +92,8 @@ namespace SI_Projekt
         private string generateNewWordLevel2() {
             string result = "";
             int lastLetter = 0, prelastLetter = 0, index = 0;
-            int wordLength = rand.Next(3, 12);
+            int wordLength = 3;// = rand.Next(3, 12);
+            for (double prob = 0.3; prob < rand.NextDouble(); wordLength++, prob += 0.08) ;
             int missesCounter = 0;
 
             while (true) {
