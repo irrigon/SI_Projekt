@@ -9,7 +9,7 @@ namespace SI_Projekt{
     class Program{
         static void Main(string[] args){
 
-            //findAllEnglishSentences();
+            //findAllEnglishSentences(100);
 
             Nodev2 root = new Nodev2(' ');
             root.createGraph();
@@ -20,13 +20,19 @@ namespace SI_Projekt{
                 Console.WriteLine("{0}", results[i]);
             }
 
+            SentenceNode sentenceRoot = new SentenceNode("NULL");
+            sentenceRoot.teach("english_sentences.txt");
+            for (int i = 0; i < 100; i++){
+                Console.WriteLine("{0}", sentenceRoot.generateNewSentence());
+            }
+
             Console.ReadKey();
             return;
         }
 
-        static void findAllEnglishSentences() {
-            // Jan Grzywacz.
+        static void findAllEnglishSentences(int n) {
             // Metoda do obróbki jednego, konkretnego pliku.
+            // Jan Grzywacz.
 
             string pathIn = Path.Combine(Environment.CurrentDirectory, "sentences.txt");
             string pathOut = Path.Combine(Environment.CurrentDirectory, "english_sentences.txt");
@@ -36,13 +42,18 @@ namespace SI_Projekt{
             StreamWriter writer = new StreamWriter(ostream);
             string line;
 
+            int i = 0;
+
             while ((line = reader.ReadLine()) != null) {
-                // Copy only "eng" lines.
-                int k = 0;
-                while (isDigit(line[k])) k++;
-                while (!isLetter(line[k])) k++;
-                if (line.Substring(k).StartsWith("eng")) {
-                    writer.WriteLine(line.Substring(k+4));
+                // Copy every nth line.
+                if ((i++)%n == 0) {
+                    // Copy only "eng" lines.
+                    int k = 0;
+                    while (isDigit(line[k])) k++;
+                    while (!isLetter(line[k])) k++;
+                    if (line.Substring(k).StartsWith("eng")) {
+                        writer.WriteLine(line.Substring(k+4));
+                    }
                 }
             }
 
