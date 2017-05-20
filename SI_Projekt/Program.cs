@@ -9,6 +9,8 @@ namespace SI_Projekt{
     class Program{
         static void Main(string[] args){
 
+            Sylabizator.Sylabizator sylabizator = new Sylabizator.Sylabizator();
+
             //findAllEnglishSentences(100);
 
             Nodev2 root = new Nodev2(' ');
@@ -20,12 +22,23 @@ namespace SI_Projekt{
                 Console.WriteLine("{0}", results[i]);
             }
 
-            SentenceNode sentenceRoot = new SentenceNode("NULL");
+            Console.Write("\n");
+
+            SentenceNode sentenceRoot = new SentenceNode("NULL",sylabizator);
             sentenceRoot.teach("english_sentences.txt");
             for (int i = 0; i < 100; i++){
                 Console.WriteLine("{0}", sentenceRoot.generateNewSentence());
             }
 
+            Console.Write("\n");
+            
+            List<string> poem = sentenceRoot.generatePoem(8,5);
+
+            for (int i = 0; i < poem.Count; i++) {
+                Console.WriteLine(poem[i]);
+            }
+
+            Console.WriteLine("\nFinished.");
             Console.ReadKey();
             return;
         }

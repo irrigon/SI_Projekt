@@ -25,5 +25,42 @@ namespace SI_Projekt {
 
             return first+rest;
         }
+
+        public static string[] Syllables(this string s, Sylabizator.Sylabizator sylabizator) {
+            // Zwracana listę sylab słowa.
+            // Jan Grzywacz.
+            List<string> wrapper = new List<string> { s };
+            List<string> tmp = sylabizator.divideIntoSyllables(wrapper, false);
+            string[] syllables = tmp[0].Split(new char[] { '-' });
+
+            /*Console.WriteLine("");
+            for (int i = 0; i < syllables.Length; i++) Console.WriteLine(syllables[i]);*/
+
+            return syllables;
+        }
+
+        public static int LastVowels(this string s) {
+            // Zwraca indeks ostatniej zbitki samogłosek.
+            // Jan Grzywacz.
+            int result = 0;
+            bool found = false;
+            for (int i = s.Length - 1; i >= 0; i--) {
+                if ("aeiou".IndexOf(s[i].ToString(), StringComparison.InvariantCultureIgnoreCase) >= 0)
+                    found = true;
+                else if (found) {
+                    result = i + 1;
+                    break;
+                }
+            }
+
+            //if ((result == s.Length - 1) && (result > 0)) result--;
+            return Math.Min(Math.Max(1,result),s.Length-3);
+        }
+
+        public static string LastN(this string s, int n) {
+            // Zwraca podciąg ostatnich n znaków.
+            // Jan Grzywacz.
+            return s.Substring(Math.Max(0,(s.Length-n)));
+        }
     }
 }
