@@ -4,3 +4,7 @@ C:\Users\Klient\Documents\Visual Studio 2015\Projects\SI_Projekt\SI_Projekt\bin\
 C:\Users\Klient\Documents\Visual Studio 2015\Projects\SI_Projekt\SI_Projekt\obj\Debug\SI_Projekt.exe
 C:\Users\Klient\Documents\Visual Studio 2015\Projects\SI_Projekt\SI_Projekt\obj\Debug\SI_Projekt.pdb
 C:\Users\Klient\documents\visual studio 2015\Projects\SI_Projekt\SI_Projekt\obj\Debug\SI_Projekt.csprojResolveAssemblyReference.cache
+C:\Users\Klient\documents\visual studio 2015\Projects\SI_Projekt\SI_Projekt\bin\Debug\EntityFramework.dll
+C:\Users\Klient\documents\visual studio 2015\Projects\SI_Projekt\SI_Projekt\bin\Debug\EntityFramework.SqlServer.dll
+C:\Users\Klient\documents\visual studio 2015\Projects\SI_Projekt\SI_Projekt\bin\Debug\EntityFramework.xml
+C:\Users\Klient\documents\visual studio 2015\Projects\SI_Projekt\SI_Projekt\bin\Debug\EntityFramework.SqlServer.xml

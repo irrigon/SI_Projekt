@@ -30,8 +30,11 @@ namespace SI_Projekt
         public void teach(int level, string path = @"WordList.txt") {
             try {
                 string[] words = System.IO.File.ReadAllLines(Path.GetFullPath(path));
-                foreach (string word in words)
+                
+                foreach (string word in words) {
+                    listOfWords.Add(word);
                     teachNewWord(word, level);
+                }
             }
             catch (IOException e) {
                 Console.Error.WriteLine("Can't find file");
@@ -42,14 +45,21 @@ namespace SI_Projekt
             string result = "";
             switch (level) {
                 case 1:
-                    while (result.Length < 3)
+                    while (result.Length < 3) {
                         result = generateNewWordLevel1();
-                    break; 
+                        if (listOfWords.Exists(x => x == result))
+                            result = "";
+                    }
+                    break;
                 case 2:
-                    while (result.Length < 3)
+                    while (result.Length < 3) {
                         result = generateNewWordLevel2();
+                        if (listOfWords.Exists(x => x == result))
+                            result = "";
+                    }
                     break;
             }
+            listOfWords.Add(result);
             return result;
         }
         
@@ -214,6 +224,8 @@ namespace SI_Projekt
         }
 
         private Random rand = new Random();
+
+        private List<string> listOfWords = new List<string>();
 
         public char letter { get; }
         public int total { get; set; }
