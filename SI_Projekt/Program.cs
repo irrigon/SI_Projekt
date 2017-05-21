@@ -31,9 +31,13 @@ namespace SI_Projekt{
             }
 
             Console.Write("\n");
-            
-            List<string> poem = sentenceRoot.generatePoem(8,5);
 
+            //List<string> poem = sentenceRoot.generatePoem(4, 15, 4);
+            List<string> poem = sentenceRoot.generatePoem(8, 7, 2);
+            //List<string> poem = sentenceRoot.generatePoem(9, 4, 3);
+            //List<string> poem = sentenceRoot.generatePoem(24, 2, 3);
+
+            Console.Write("\n\n");
             for (int i = 0; i < poem.Count; i++) {
                 Console.WriteLine(poem[i]);
             }

@@ -21,11 +21,13 @@ namespace SI_Projekt
             // Jan Grzywacz.
 
             children = new List<SentenceNode>();
+            marked = new List<bool>();
             counters = new List<int>();
 
             if (word != "NULL") {
                 children.Add(new SentenceNode("NULL",sylabizator));
                 counters.Add(0);
+                marked.Add(false);
             }
 
             this.sylabizator = sylabizator;
@@ -98,7 +100,7 @@ namespace SI_Projekt
             return true;
         }
         
-        public List<string> generatePoem(int length, int syllables) {
+        public List<string> generatePoem(int length, int syllables, int life) {
             // Generowanie całego wierszyka, z określoną liczbą
             // sylab w wersie, i ilością wersów. Rymy dobierane
             // są automatycznie.
@@ -107,12 +109,43 @@ namespace SI_Projekt
             if ((length <= 0) || (syllables <= 0)) return null;
 
             List<string> poem = new List<string>();
-
-            currentRhyme = null;
+            currentRhymeWords = new Stack<string>();
+            maxRhymeLife = life;
             rhymeLife = 0;
 
+            int megaResetCounter = 0;
+            int megaResetMax = 10;
+
             for (int i = 0; i < length; i++) {
-                poem.Add(generateNewVerse(syllables));
+                string verse = generateNewVerse(syllables);
+                if (verse == null) {
+                    megaResetCounter++;
+                    bool oneTime = true;
+                    while ((((megaResetCounter >= megaResetMax)) || (oneTime)) && (i > 0)) {
+                        // "Cofamy się w rozwoju", usuwając ostatni wers.
+                        oneTime = false;
+                        if (i != 0) {
+                            Console.Write("|");
+                            poem.RemoveAt(i-1);
+                            i -= 1;
+                        }
+
+                        // Jeżeli jakiś rym dopiero co
+                        // został stworzony, to kasujemy go.
+                        currentRhymeWords.Pop();
+                        if (++rhymeLife == maxRhymeLife) {
+                            megaResetCounter = 0;
+                            currentRhymeWords.Clear();
+                            rhymeLife = 0;
+                        }
+                    }
+                    i--;
+                    if (megaResetCounter >= megaResetMax) megaResetCounter = 0;
+                }
+                else {
+                    Console.Write("("+poem.Count+")");
+                    poem.Add(verse);
+                }
             }
 
             return poem;
@@ -123,52 +156,100 @@ namespace SI_Projekt
             // ale używa zaimportowanego sylabizatora w doborze słów.
             // Jan Grzywacz.
 
+            int index;
+            int repeat_counter = 0;
+            int big_repeat_counter = 0;
+            int repeat_max = 100;
+            int big_repeat_max = 10;
+
             string result;
+            int syllablesLeft;
+            Stack<string> previousResult;
+            Stack<int> previousSyllablesLeft;
+
+            string lastWord = null;
+            string newWord = null;
+
             bool repeat = false;
+            bool undo = false;
             string[] syllables = null;
 
             do {
-                result = "";
-                int syllablesLeft = maxSyllables;
+                big_repeat_counter++;
+                if (big_repeat_counter >= big_repeat_max) return null;
 
-                string lastWord = null;
-                string newWord = null;
+                touched = true;
+                unmarkAll();
+                repeat_counter = 0;
+                repeat = false;
+                undo = false;
+
+                result = "";
+                syllablesLeft = maxSyllables;
+
+                lastWord = null;
+                newWord = null;
+
+                previousResult = new Stack<string>();
+                previousSyllablesLeft = new Stack<int>();
+                Stack<string> previousLastWord = new Stack<string>();
+                SentenceNode child;
 
                 while (syllablesLeft > 0) {
 
                     if (lastWord == null) {
                         // Znajdujemy pierwsze słowo.
-                        SentenceNode child = randomChildWithSyllables(syllablesLeft,currentRhyme);
-
+                        child = randomChildWithSyllables(syllablesLeft, currentRhymeWords);
                         // Jeżeli nie znaleźliśmy nic, możemy sobie już teraz odpuścić.
                         if (child == null) return null;
-
                         newWord = child.word;
                     }
                     else {
                         // Znajdujemy kolejne.
-                        int index = findChildIndex(lastWord);
-                        SentenceNode child = (children[index].randomChildWithSyllables(syllablesLeft, currentRhyme));
+                        index = findChildIndex(lastWord);
+                        child = (children[index].randomChildWithSyllables(syllablesLeft, currentRhymeWords));
                         
-                        while (child == null) {
-                            child = randomChildWithSyllables(syllablesLeft, currentRhyme);
-                            //repeat = true;
-                            //break;
-                        }
-
-                        newWord = child.word;
+                        if (child == null) undo = true;
+                        else newWord = child.word;
+                        //child = randomChildWithSyllables(syllablesLeft, currentRhyme);
                     }
 
-                    // Dodawanie nowego słowa.
-                    if (newWord == "NULL") break;
-                    else if (syllablesLeft < maxSyllables) result += " " + newWord;
-                    else result += newWord.Capitalize();
+                    if (undo == true) {
+                        // Cofanie akcji. Usuwamy połączenie między
+                        // poprzednim węzłem, a tym, który się "nie sprawdził".
+                        undo = false;
+                        repeat_counter++;
 
-                    // Zmiana liczby pozostałych nam sylab.
-                    syllables = newWord.Syllables(sylabizator);
-                    syllablesLeft -= syllables.Length;
+                        String tmp = previousLastWord.Pop();
+                        if ((tmp == null) || (repeat_counter >= repeat_max)) {
+                            // Jak cofnęliśmy się za daleko, to wszystko od nowa.
+                            Console.Write(".");
+                            repeat = true;
+                            break;
+                        }
 
-                    lastWord = newWord;
+                        index = findChildIndex(tmp);
+                        children[index].mark(children[index].findChildIndex(lastWord));
+
+                        lastWord = tmp;
+                        syllablesLeft = previousSyllablesLeft.Pop();
+                        result = previousResult.Pop();
+                    }
+                    else {
+                        previousLastWord.Push(lastWord);
+                        previousSyllablesLeft.Push(syllablesLeft);
+                        previousResult.Push(result);
+
+                        // Dodawanie nowego słowa.
+                        if (newWord == "NULL") break;
+                        else if (syllablesLeft < maxSyllables) result += " " + newWord;
+                        else result += newWord.Capitalize();
+
+                        // Zmiana liczby pozostałych nam sylab.
+                        syllables = newWord.Syllables(sylabizator);
+                        syllablesLeft -= syllables.Length;
+                        lastWord = newWord;
+                    }
                 }
 
                 // Finalizacja i walidacja zdania.
@@ -177,17 +258,14 @@ namespace SI_Projekt
             } while (repeat);
 
             // Aktualizowanie rymu.
-            if (currentRhyme == null) {
-                currentRhyme = syllables[syllables.Length - 1];
-                rhymeLife = 2;
-            }
-            
-            if (--rhymeLife == 0) currentRhyme = null;
+            if (currentRhymeWords.Count == 0) rhymeLife = maxRhymeLife;
+            if (--rhymeLife == 0) currentRhymeWords.Clear();
+            else currentRhymeWords.Push(newWord); //syllables[syllables.Length - 1];
 
             return result;
         }
 
-        protected SentenceNode randomChildWithSyllables(int syllablesLeft, string rhyme) {
+        protected SentenceNode randomChildWithSyllables(int syllablesLeft, Stack<string> rhymes) {
             // Znajdywanie losowego dziecka, z dwoma ograniczeniami.
             // Nie może być w nim więcej sylab niż podana liczba,
             // i końcową sylabą musi być podana (chyba, że damy null).
@@ -203,7 +281,7 @@ namespace SI_Projekt
 
             // Wybieramy możliwych kandydatów do nowej listy.
             for (int i = 1; i < children.Count; i++) {
-                if (validateWord(getWord(i), syllablesLeft, rhyme)) {
+                if ((validateWord(getWord(i), syllablesLeft, rhymes)) && (!marked[i])) {
                     newChildren.Add(children[i]);
                     newCounters.Add(counters[i]);
                     newTotal += counters[i];
@@ -230,7 +308,7 @@ namespace SI_Projekt
             return newChild;
         }
 
-        protected bool validateWord(string word, int syllablesLeft, string rhyme) {
+        protected bool validateWord(string word, int syllablesLeft, Stack<string> rhymes) {
             // Sprawdzanie warunków dla funkcji randomChildWithSyllables.
             // Jan Grzywacz.
 
@@ -246,16 +324,21 @@ namespace SI_Projekt
 
             // Warunek 2 - jeśli słowo wypełni nam wers do końca,
             // to ostatnia sylaba musi być taka sama jak rym.
-            if ((syllables.Length == syllablesLeft) && (rhyme != null)) {
+            foreach (string rhyme in rhymes) {
+                if ((syllables.Length == syllablesLeft) && (rhyme != null)) {
 
-                // Porównujemy od końca do ostatniej samogłoski.
-                int compareLength = rhyme.Length-rhyme.LastVowels();
+                    // Warunek 2.5 - słowo nie może być takie same jak rym ani zawierać się jedno w drugim.
+                    if (String.Compare(rhyme.LastN(word.Length), word.LastN(rhyme.Length)) == 0) return false;
 
-                string rhymeSound = rhyme.LastN(compareLength);
-                int soundLength = Math.Min(rhymeSound.Length, compareLength);
-                string wordSound = syllables[syllables.Length - 1].LastN(soundLength);
+                    // Porównujemy od końca do ostatniej samogłoski.
+                    int compareLength = rhyme.Length-rhyme.LastVowels();
 
-                if (String.Compare(rhymeSound, wordSound) != 0) return false;
+                    string rhymeSound = rhyme.LastN(compareLength);
+                    int soundLength = Math.Min(rhymeSound.Length, compareLength);
+                    string wordSound = syllables[syllables.Length - 1].LastN(soundLength);
+
+                    if (String.Compare(rhymeSound, wordSound) != 0) return false;
+                }
             }
 
             return true;
@@ -318,6 +401,7 @@ namespace SI_Projekt
                 child = new SentenceNode(newWord,sylabizator);
                 children.Add(child);
                 counters.Add(counterAdd);
+                marked.Add(false);
             }
 
             return child;
@@ -339,6 +423,7 @@ namespace SI_Projekt
                 // Jeśli nie, dodajemy je.
                 children.Add(child);
                 counters.Add(1);
+                marked.Add(false);
             }
         }
 
@@ -391,15 +476,39 @@ namespace SI_Projekt
             return word;
         }
 
+        public void mark(int i) {
+            marked[i] = true;
+            touched = true;
+        }
+
+        public void unmarkMine() {
+            for (int i = 0; i < marked.Count; i++) {
+                marked[i] = false;
+            }
+        }
+
+        public void unmarkAll() {
+            if (!touched) return;
+            for (int i = 0; i < marked.Count; i++) {
+                marked[i] = false;
+                touched = false;
+                children[i].unmarkAll();
+            }
+        }
+
         protected Random rand = new Random();
         protected string word { get; }
         protected int total { get; set; }
         protected List<int> counters { get; set; }
+        protected List<bool> marked { get; set; }
         protected List<SentenceNode> children { get; set; }
+
+        bool touched = false;
 
         Sylabizator.Sylabizator sylabizator;
 
-        protected string currentRhyme;
+        protected Stack<string> currentRhymeWords;
         protected int rhymeLife;
+        protected int maxRhymeLife;
     }
 }
