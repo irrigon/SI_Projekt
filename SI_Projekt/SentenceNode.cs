@@ -36,10 +36,31 @@ namespace SI_Projekt
         }
 
         public void teach(string path) {
+            // Uczymy łańcuch zdaniami z danego pliku.
+            // Jan Grzywacz.
+
             string[] sentences = System.IO.File.ReadAllLines(
                 Path.Combine(Environment.CurrentDirectory, path));
             foreach (string sentence in sentences)
                 teachNewSentence(sentence);
+
+            for (int i = 0; i < children.Count; i++) {
+                //if (counters[i] > 0) Console.WriteLine(children[i].word + " " + counters[i] + "/" + total);
+            }
+        }
+
+        public void teachRandomWords(string path, int density) {
+            // Uczymy łańcuch losowymi słowami z pliku.
+            // Nie mają one żadnych powiązań, więc powiązania
+            // zostaną stworzone - po prostu dorzucimy każde
+            // słowo density razy w losowe miejsce sieci.
+            // Jan Grzywacz.
+
+            string[] sentences = System.IO.File.ReadAllLines(
+                Path.Combine(Environment.CurrentDirectory, path));
+            foreach (string sentence in sentences)
+                for (int i = 0; i < density; i++)
+                    teachNewSingleWord(sentence);
 
             for (int i = 0; i < children.Count; i++) {
                 //if (counters[i] > 0) Console.WriteLine(children[i].word + " " + counters[i] + "/" + total);
@@ -257,7 +278,7 @@ namespace SI_Projekt
 
                         // Zmiana liczby pozostałych nam sylab oraz liter.
                         syllables = newWord.Syllables(sylabizator);
-                        lettersLeft -= newWord.Length;
+                        lettersLeft -= newWord.Length+1;
                         syllablesLeft -= syllables.Length;
                         lastWord = newWord;
                     }
@@ -400,6 +421,20 @@ namespace SI_Projekt
             lastChild.counters[0]++;
             lastChild.total++;
         }
+        
+        protected void teachNewSingleWord(string word) {
+            // Wrzucamy do gotowej sieci słowo w losowe miejsce.
+            // Jan Grzywacz.
+            
+            SentenceNode victim = totallyRandomChild();
+            if (victim.word == "NULL") victim = this;
+            
+            SentenceNode newChild = addNewWord(word, 0);
+            victim.appendChild(newChild);
+
+            SentenceNode anotherVictim = totallyRandomChild();
+            newChild.appendChild(anotherVictim);
+        }
 
         protected SentenceNode addNewWord(string newWord, int counterAdd) {
             // Dodawanie nowego słowa do listy,
@@ -533,7 +568,7 @@ namespace SI_Projekt
         protected int rhymeLife;
         protected int maxRhymeLife;
 
-        int verseThreshold = 3;
+        int verseThreshold = 2;
 
         int mini_repeat_counter = 0;
         int repeat_counter = 0;

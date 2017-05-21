@@ -12,7 +12,8 @@ namespace SI_Projekt{
             Sylabizator.Sylabizator sylabizator = new Sylabizator.Sylabizator();
 
             //findAllEnglishSentences(100);
-
+            //cutStrangeWords();
+            
             Nodev2 root = new Nodev2(' ');
             root.createGraph();
             root.teach();
@@ -26,11 +27,14 @@ namespace SI_Projekt{
 
             SentenceNode sentenceRoot = new SentenceNode("NULL",sylabizator);
             sentenceRoot.teach("english_sentences.txt");
+
             for (int i = 0; i < 100; i++){
                 Console.WriteLine("{0}", sentenceRoot.generateNewSentence());
             }
 
             Console.Write("\n");
+
+            sentenceRoot.teachRandomWords("strange_words.txt", 40);
 
             //List<string> poem = sentenceRoot.generatePoem(4, 15, 4);
             List<string> poem = sentenceRoot.generatePoem(8, 7, 2);
@@ -75,6 +79,27 @@ namespace SI_Projekt{
             }
 
             Console.WriteLine("Sentence picking finished.");
+        }
+        
+        static void cutStrangeWords() {
+            // Ditto.
+            // Jan Grzywacz.
+
+            string pathIn = Path.Combine(Environment.CurrentDirectory, "strange_words_uncut.txt");
+            string pathOut = Path.Combine(Environment.CurrentDirectory, "strange_words.txt");
+            FileStream istream = new FileStream(pathIn, FileMode.Open);
+            FileStream ostream = new FileStream(pathOut, FileMode.Create);
+            StreamReader reader = new StreamReader(istream);
+            StreamWriter writer = new StreamWriter(ostream);
+            string line;
+
+            while ((line = reader.ReadLine()) != null) {
+                // Copy only first part of line.
+                string[] parts = line.Split(new char[] { ' ' });
+                writer.WriteLine(parts[0]);
+            }
+
+            Console.WriteLine("Description clipping finished.");
         }
 
         static bool isDigit(char c) {
