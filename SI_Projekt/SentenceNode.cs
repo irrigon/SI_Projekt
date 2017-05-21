@@ -117,7 +117,10 @@ namespace SI_Projekt
             int megaResetMax = 10;
 
             for (int i = 0; i < length; i++) {
+
                 string verse = generateNewVerse(syllables);
+
+                // Sytuacja awaryjna - nie udało się stworzenie wersu.
                 if (verse == null) {
                     megaResetCounter++;
                     bool oneTime = true;
@@ -157,10 +160,9 @@ namespace SI_Projekt
             // Jan Grzywacz.
 
             int index;
-            int repeat_counter = 0;
-            int big_repeat_counter = 0;
-            int repeat_max = 100;
-            int big_repeat_max = 10;
+            mini_repeat_counter = 0;
+            repeat_counter = 0;
+            big_repeat_counter = 0;
 
             string result;
             int syllablesLeft;
@@ -280,17 +282,22 @@ namespace SI_Projekt
             int newTotal = 0;
 
             // Wybieramy możliwych kandydatów do nowej listy.
-            for (int i = 1; i < children.Count; i++) {
-                if ((validateWord(getWord(i), syllablesLeft, rhymes)) && (!marked[i])) {
-                    newChildren.Add(children[i]);
-                    newCounters.Add(counters[i]);
-                    newTotal += counters[i];
-                    //Console.WriteLine(children[i].word);
+            if (mini_repeat_counter < mini_repeat_max) {
+                for (int i = 1; i < children.Count; i++) {
+                    if ((validateWord(getWord(i), syllablesLeft, rhymes)) && (!marked[i])) {
+                        newChildren.Add(children[i]);
+                        newCounters.Add(counters[i]);
+                        newTotal += counters[i];
+                        //Console.WriteLine(children[i].word);
+                    }
                 }
             }
 
             // Jeżeli nie ma już nic, zwracamy null.
-            if (newChildren.Count == 0) return null;
+            if (newChildren.Count == 0) {
+                mini_repeat_counter = 0;
+                return null;
+            }
 
             // Zamiana naszych list...
             children = newChildren;
@@ -326,6 +333,7 @@ namespace SI_Projekt
             // to ostatnia sylaba musi być taka sama jak rym.
             foreach (string rhyme in rhymes) {
                 if ((syllables.Length == syllablesLeft) && (rhyme != null)) {
+                    //mini_repeat_counter++;
 
                     // Warunek 2.5 - słowo nie może być takie same jak rym ani zawierać się jedno w drugim.
                     if (String.Compare(rhyme.LastN(word.Length), word.LastN(rhyme.Length)) == 0) return false;
@@ -341,6 +349,7 @@ namespace SI_Projekt
                 }
             }
 
+            mini_repeat_counter--;
             return true;
         }
 
@@ -510,5 +519,12 @@ namespace SI_Projekt
         protected Stack<string> currentRhymeWords;
         protected int rhymeLife;
         protected int maxRhymeLife;
+
+        int mini_repeat_counter = 0;
+        int repeat_counter = 0;
+        int big_repeat_counter = 0;
+        int mini_repeat_max = 50;
+        int repeat_max  =100;//200;
+        int big_repeat_max = 10;
     }
 }
