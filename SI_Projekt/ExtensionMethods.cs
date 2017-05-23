@@ -76,7 +76,7 @@ namespace SI_Projekt {
             }
 
             //if ((result == s.Length - 1) && (result > 0)) result--;
-            return Math.Min(Math.Max(0,result),s.Length-3);
+            return Math.Min(Math.Max(0,result),s.Length-2);
         }
 
         public static int LastVowelsOLD(this string s) {

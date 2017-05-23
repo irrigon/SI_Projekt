@@ -33,6 +33,8 @@ namespace Projekt_SI_GUI
             amountTests1 = sentenceRoot.getMiniRepeatMax();
             amountTests2 = sentenceRoot.getRepeatMax();
             amountTests3 = sentenceRoot.getBigRepeatMax();
+            dispersion = sentenceRoot.getWordDispersion();
+            power = sentenceRoot.getWordPower();
 
             setAmounts();
         }
@@ -47,6 +49,8 @@ namespace Projekt_SI_GUI
                 sentenceRoot.setMiniRepeatMax((int)AmountTests1.Value);
                 sentenceRoot.setRepeatMax((int)AmountTests2.Value);
                 sentenceRoot.setBigRepeatMax((int)AmountTests3.Value);
+                sentenceRoot.setWordDispersion((int)WordDispersion.Value);
+                sentenceRoot.setWordPower((int)WordPower.Value);
                 this.Close();
             }
             else if (btn.Name.ToString() == "Anuluj")
@@ -63,6 +67,8 @@ namespace Projekt_SI_GUI
         public static int amountTests1 { get; set; } // ilość prób1
         public static int amountTests2 { get; set; } // ilość prób2
         public static int amountTests3 { get; set; } // ilość prób3
+        public static int dispersion { get; set; }
+        public static int power { get; set; }
 
         private void setAmounts()
         {
@@ -72,6 +78,8 @@ namespace Projekt_SI_GUI
             AmountTests1.Text = amountTests1.ToString();
             AmountTests2.Text = amountTests2.ToString();
             AmountTests3.Text = amountTests3.ToString();
+            WordDispersion.Text = dispersion.ToString();
+            WordPower.Text = power.ToString();
         }
 
         private void getAmout_TextChanged(object sender, TextChangedEventArgs e)

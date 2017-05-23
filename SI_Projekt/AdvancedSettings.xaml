@@ -2,22 +2,27 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:wpfTool="clr-namespace:Xceed.Wpf.Toolkit;assembly=Xceed.Wpf.Toolkit"
-        Title="Ustawienia zaawansowane" Height="344" Width="300">
-    <Grid>
+        ResizeMode="NoResize"
+        Title="Ustawienia zaawansowane" Height="404.8" Width="300">
+    <Grid Margin="0,0,-0.4,-3">
         <Label Content="Liczba sylab w wersie:" HorizontalAlignment="Left" Margin="32,23,0,0" VerticalAlignment="Top" Width="142"/>
         <Label Content="Życie rymu:" HorizontalAlignment="Right" Margin="0,54,118,0" VerticalAlignment="Top" Width="142"/>
         <wpfTool:DecimalUpDown x:Name="AmountSleInRow" HorizontalAlignment="Right" Height="23" Margin="0,26,45,0" Minimum="1" Maximum="18" Text="10" VerticalAlignment="Top" Width="68"/>
         <wpfTool:DecimalUpDown x:Name="RythmLife" HorizontalAlignment="Right" Height="23" Margin="0,57,45,0" Minimum="1" Maximum="8" Text="10" VerticalAlignment="Top" Width="68"/>
         <Label Content="Stabilność wersów:" HorizontalAlignment="Right" Margin="0,85,118,0" VerticalAlignment="Top" Width="142"/>
         <wpfTool:DecimalUpDown x:Name="lenSability" HorizontalAlignment="Right" Height="23" Margin="0,88,45,0" Minimum="0" Maximum="20" Text="10" VerticalAlignment="Top" Width="68"/>
-        <Label Content="Ilość prób słowa:" HorizontalAlignment="Right" Margin="0,133,118,0" VerticalAlignment="Top" Width="142"/>
-        <wpfTool:DecimalUpDown x:Name="AmountTests1" HorizontalAlignment="Right" Height="23" Margin="0,135,45,0" Minimum="1" Maximum="1000000" Text="10" VerticalAlignment="Top" Width="68"/>
-        <Label Content="Ilość prób wersu:" HorizontalAlignment="Right" Margin="0,164,118,0" VerticalAlignment="Top" Width="142"/>
-        <wpfTool:DecimalUpDown x:Name="AmountTests2" HorizontalAlignment="Right" Height="23" Margin="0,167,45,0" Minimum="1" Maximum="1000000" Text="10" VerticalAlignment="Top" Width="68"/>
-        <Label Content="Ilość prób zwrotki:" HorizontalAlignment="Right" Margin="0,195,118,0" VerticalAlignment="Top" Width="142"/>
-        <wpfTool:DecimalUpDown x:Name="AmountTests3" HorizontalAlignment="Right" Height="23" Margin="0,198,45,0" Minimum="1" Maximum="1000000" Text="10" VerticalAlignment="Top" Width="68"/>
-        <Button Content="OK" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Margin="161,268,0,0" Click="Button_Click" Name="OK"/>
-        <Button Content="Anuluj" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Margin="59,268,0,0" Click="Button_Click" Name="Anuluj"  />
+        <Label Content="Ilość prób słowa:" HorizontalAlignment="Right" Margin="0,130,118,0" VerticalAlignment="Top" Width="142"/>
+        <wpfTool:DecimalUpDown x:Name="AmountTests1" HorizontalAlignment="Right" Height="23" Margin="0,132,45,0" Minimum="1" Maximum="1000000" Text="10" VerticalAlignment="Top" Width="68"/>
+        <Label Content="Ilość prób wersu:" HorizontalAlignment="Right" Margin="0,161,118,0" VerticalAlignment="Top" Width="142"/>
+        <wpfTool:DecimalUpDown x:Name="AmountTests2" HorizontalAlignment="Right" Height="23" Margin="0,164,45,0" Minimum="1" Maximum="1000000" Text="10" VerticalAlignment="Top" Width="68"/>
+        <Label Content="Ilość prób zwrotki:" HorizontalAlignment="Right" Margin="0,192,118,0" VerticalAlignment="Top" Width="142"/>
+        <wpfTool:DecimalUpDown x:Name="AmountTests3" HorizontalAlignment="Right" Height="23" Margin="0,195,45,0" Minimum="1" Maximum="1000000" Text="10" VerticalAlignment="Top" Width="68"/>
+        <Button Content="OK" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Margin="161,321,0,0" Click="Button_Click" Name="OK"/>
+        <Button Content="Anuluj" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Margin="59,321,0,0" Click="Button_Click" Name="Anuluj"  />
+        <Label Content="Rozproszenie słów:" HorizontalAlignment="Right" Margin="0,237,118,0" VerticalAlignment="Top" Width="142"/>
+        <wpfTool:DecimalUpDown x:Name="WordDispersion" HorizontalAlignment="Right" Height="23" Margin="0,240,45,0" Minimum="1" Maximum="100" Text="40" VerticalAlignment="Top" Width="68"/>
+        <Label Content="Moc słów:" HorizontalAlignment="Right" Margin="0,268,118,0" VerticalAlignment="Top" Width="142"/>
+        <wpfTool:DecimalUpDown x:Name="WordPower" HorizontalAlignment="Right" Height="23" Margin="0,271,45,0" Minimum="1" Maximum="100000" Text="5" VerticalAlignment="Top" Width="68"/>
 
     </Grid>
 </Window>

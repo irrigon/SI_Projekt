@@ -43,36 +43,52 @@ namespace SI_Projekt
             this.window = window;
         }
 
-        public void teach(string path) {
+        public void teach(string path, bool absolutePath) {
             // Uczymy łańcuch zdaniami z danego pliku.
             // Jan Grzywacz.
 
-            string[] sentences = System.IO.File.ReadAllLines(
-                Path.Combine(Environment.CurrentDirectory, path));
+            string[] sentences;
+            if (absolutePath) sentences = System.IO.File.ReadAllLines(path);
+            else sentences = System.IO.File.ReadAllLines(
+                    Path.Combine(Environment.CurrentDirectory, path));
+
             foreach (string sentence in sentences)
                 teachNewSentence(sentence);
 
             for (int i = 0; i < children.Count; i++) {
                 //if (counters[i] > 0) Console.WriteLine(children[i].word + " " + counters[i] + "/" + total);
             }
+
+            unlockWindow();
+            updateLearnedList();
         }
 
-        public void teachRandomWords(string path, int density) {
+        public void teachRandomWords(string path, int dispersion, int power, bool absolutePath) {
             // Uczymy łańcuch losowymi słowami z pliku.
             // Nie mają one żadnych powiązań, więc powiązania
             // zostaną stworzone - po prostu dorzucimy każde
             // słowo density razy w losowe miejsce sieci.
             // Jan Grzywacz.
 
-            string[] sentences = System.IO.File.ReadAllLines(
-                Path.Combine(Environment.CurrentDirectory, path));
+            string[] sentences;
+            if (absolutePath) sentences = System.IO.File.ReadAllLines(path);
+            else sentences = System.IO.File.ReadAllLines(
+                    Path.Combine(Environment.CurrentDirectory, path));
+
             foreach (string sentence in sentences)
-                for (int i = 0; i < density; i++)
-                    teachNewSingleWord(sentence);
+                for (int i = 0; i < dispersion; i++)
+                    teachNewSingleWord(sentence,power);
 
             for (int i = 0; i < children.Count; i++) {
                 //if (counters[i] > 0) Console.WriteLine(children[i].word + " " + counters[i] + "/" + total);
             }
+
+            unlockWindow();
+            updateLearnedList();
+        }
+
+        public void teachRandomWords(string path, bool absolutePath) {
+            teachRandomWords(path,wordDispersion,wordPower,absolutePath);
         }
 
         public string generateNewSentence() {
@@ -463,9 +479,11 @@ namespace SI_Projekt
             // Ostatnie słowo - dodajemy zakończenie.
             lastChild.counters[0]++;
             lastChild.total++;
+
+            addToWindowText(sentence);
         }
         
-        protected void teachNewSingleWord(string word) {
+        protected void teachNewSingleWord(string word, int power) {
             // Wrzucamy do gotowej sieci słowo w losowe miejsce.
             // Jan Grzywacz.
             
@@ -477,6 +495,8 @@ namespace SI_Projekt
 
             SentenceNode anotherVictim = totallyRandomChild();
             newChild.appendChild(anotherVictim);
+
+            addToWindowText(word);
         }
 
         protected SentenceNode addNewWord(string newWord, int counterAdd) {
@@ -506,24 +526,31 @@ namespace SI_Projekt
             return child;
         }
 
-        protected void appendChild(SentenceNode child) {
+        protected void appendChild(SentenceNode child, int power)
+        {
             // Dodawanie istniejącego już słowa do listy dzieci.
             // Jan Grzywacz.
-            total++;
+            total += power;
 
             // Sprawdzamy, czy mamy już takie słowo.
             int index = findChildIndex(child.word);
 
-            if (index != -1) {
+            if (index != -1)
+            {
                 // Jeżeli tak, aktualizujemy jego licznik.
-                counters[index]++;
+                counters[index] += power;
             }
-            else {
+            else
+            {
                 // Jeśli nie, dodajemy je.
                 children.Add(child);
-                counters.Add(1);
+                counters.Add(power);
                 marked.Add(false);
             }
+        }
+
+        protected void appendChild(SentenceNode child) {
+            appendChild(child,1);
         }
 
         protected int findChildIndex(string word) {
@@ -610,11 +637,39 @@ namespace SI_Projekt
                         new object[] { text.Aggregate(joinStrings)+"\n"+tmp });
         }
 
+        protected void clearWindowText()
+        {
+            if (window != null)
+                window.ContentTextBoxPoem.Dispatcher.Invoke(
+                    new MainWindow.UpdateVoidCallback(window.clearPoem),
+                        new object[] {  });
+        }
+
+        protected void addToWindowText(string tmp)
+        {
+            if (window != null)
+                window.ContentTextBoxPoem.Dispatcher.Invoke(
+                    new MainWindow.UpdateTextCallback(window.addToPoem),
+                        new object[] { tmp + "\n" });
+        }
+
         protected void unlockWindow() {
             if (window != null)
                 window.ContentTextBoxPoem.Dispatcher.Invoke(
                     new MainWindow.UpdateVoidCallback(window.unlockEverything),
                         new object[] {  });
+            if (window != null)
+                window.ContentTextBoxPoem.Dispatcher.Invoke(
+                    new MainWindow.UpdateVoidCallback(window.stopTimer),
+                        new object[] { });
+        }
+
+        protected void updateLearnedList()
+        {
+            if (window != null)
+                window.ContentTextBoxPoem.Dispatcher.Invoke(
+                    new MainWindow.UpdateVoidCallback(window.updatePoemFileList),
+                        new object[] { });
         }
 
         protected static bool checkSyllables = true;
@@ -647,11 +702,13 @@ namespace SI_Projekt
         protected int maxLetters;
         protected int syllablesInVerse = 7;
         protected int maxRhymeLife = 2;
-
-        protected int rhymeLife;
-
         int verseThreshold = 1;
 
+        int wordDispersion = 30;
+        int wordPower = 10;
+
+        protected int rhymeLife;
+        
         string result;
 
         bool stopped;
@@ -677,5 +734,12 @@ namespace SI_Projekt
         public void setMiniRepeatMax(int x) { mini_repeat_max = x; }
         public void setRepeatMax(int x) { repeat_max = x; }
         public void setBigRepeatMax(int x) { big_repeat_max = x; }
+
+        public int getWordDispersion() { return wordDispersion; }
+        public int getWordPower() { return wordPower; }
+        public void setWordDispersion(int x) { wordDispersion = x; }
+        public void setWordPower(int x) { wordPower = x; }
+
+        public Sylabizator.Sylabizator getSylabizator() { return sylabizator; }
     }
 }

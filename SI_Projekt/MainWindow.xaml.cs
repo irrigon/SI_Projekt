@@ -30,8 +30,9 @@ namespace Projekt_SI_GUI
         public MainWindow()
         {
             InitializeComponent();
-            poemButton.IsEnabled = true;
+            poemButton.IsEnabled = false;
             poemButtonStop.IsEnabled = false;
+            PoemReset.IsEnabled = false;
 
             verseChecker.IsChecked = true;
             letterChecker.IsChecked = true;
@@ -45,34 +46,50 @@ namespace Projekt_SI_GUI
         public delegate void UpdateTextCallback(string message);
         public delegate void UpdateVoidCallback();
 
+        public void startTimer()
+        {
+            timerStart = DateTime.Now;
+            dispatcherTimer = new System.Windows.Threading.DispatcherTimer();
+            dispatcherTimer.Tick += dispatcherTimer_Tick;
+            dispatcherTimer.Interval = new TimeSpan(0, 0, 0, 0, 10);
+            dispatcherTimer.Start();
+        }
+
+        public void stopTimer()
+        {
+            dispatcherTimer.Stop();
+        }
+
+        public void clearPoem()
+        { ContentTextBoxPoem.Text = ""; }
+
+        public void addToPoem(string str)
+        {
+            if (toTextBoxPoem.IsChecked == true)
+                ContentTextBoxPoem.AppendText(str);
+        }
+
         public void updatePoem(string str)
         {
-            ContentTextBoxPoem.Text = str;
+            if (toTextBoxPoem.IsChecked == true)
+                ContentTextBoxPoem.Text = str;
+        }
+
+        public void updatePoemFileList()
+        {
+            if (loadedPoemFiles.Count == 0) PoemLearnedBox.Text = "";
+            else PoemLearnedBox.Text = loadedPoemFiles.Aggregate(joinStrings);
+        }
+
+        protected string joinStrings(string str1, string str2)
+        {
+            return str1 + "\n" + str2;
         }
 
         private void generatePoem(object sender, RoutedEventArgs e)
         {
-            poemButtonStop.IsEnabled = true;
-
-            poemButton.IsEnabled = false;
-            optionsButton.IsEnabled = false;
-            destPoem.IsEnabled = false;
-            srcPoem.IsEnabled = false;
-            VerseAmout.IsEnabled = false;
-            wordTab.IsEnabled = false;
-            poemTab.IsEnabled = false;
-            toTextBoxPoem.IsEnabled = false;
-            toFilePoem.IsEnabled = false;
-
-            EnglishPoem.IsEnabled = false;
-            PolishPoem.IsEnabled = false;
-
-            toFilePoem.IsEnabled = false;
-            toTextBoxPoem.IsEnabled = false;
-            verseChecker.IsEnabled = false;
-            letterChecker.IsEnabled = false;
-            identChecker.IsEnabled = false;
-            rhymeChecker.IsEnabled = false;
+            lockEverything();
+            startTimer();
 
             Console.WriteLine((bool)rhymeChecker.IsChecked);
             sentenceRoot.setChecks( (bool)verseChecker.IsChecked,
@@ -88,10 +105,44 @@ namespace Projekt_SI_GUI
             //await Task.Factory.StartNew(() => sentenceRoot.generatePoem(8, 7, 2));
         }
 
+        System.Windows.Threading.DispatcherTimer dispatcherTimer;
+        DateTime timerStart;
+        private void dispatcherTimer_Tick(object sender, EventArgs e)
+        {
+            timerPoem.Text = (DateTime.Now.Subtract(timerStart)).ToString("mm\\:ss\\:ff");
+        }
+
         private void stopPoem(object sender, RoutedEventArgs e)
         {
+            dispatcherTimer.Stop();
             unlockEverything();
             sentenceRoot.stop();
+        }
+
+        public void lockEverything() {
+
+            poemButtonStop.IsEnabled = true;
+
+            poemButton.IsEnabled = false;
+            optionsButton.IsEnabled = false;
+            destPoem.IsEnabled = false;
+            srcPoem.IsEnabled = false;
+            VerseAmout.IsEnabled = false;
+            wordTab.IsEnabled = false;
+            poemTab.IsEnabled = false;
+            toTextBoxPoem.IsEnabled = false;
+            toFilePoem.IsEnabled = false;
+            PoemReset.IsEnabled = false;
+
+            EnglishPoem.IsEnabled = false;
+            PolishPoem.IsEnabled = false;
+
+            toFilePoem.IsEnabled = false;
+            toTextBoxPoem.IsEnabled = false;
+            verseChecker.IsEnabled = false;
+            letterChecker.IsEnabled = false;
+            identChecker.IsEnabled = false;
+            rhymeChecker.IsEnabled = false;
         }
 
         public void unlockEverything() {
@@ -107,6 +158,7 @@ namespace Projekt_SI_GUI
             poemTab.IsEnabled = true;
             toTextBoxPoem.IsEnabled = true;
             toFilePoem.IsEnabled = true;
+            PoemReset.IsEnabled = true;
 
             EnglishPoem.IsEnabled = true;
             PolishPoem.IsEnabled = true;
@@ -138,10 +190,22 @@ namespace Projekt_SI_GUI
 
         private void RadioButton_Language(object sender, RoutedEventArgs e){
             RadioButton rdo = sender as RadioButton;
-            if (rdo.Name.ToString() == "Polish") {
+            if (rdo.Name.ToString() == "SentencePoem") {
+                sentences = true;
+            }
+            else if (rdo.Name.ToString() == "WordPoem"){
+                sentences = false;
+            }
+        }
+        private void RadioButton_Poem_File(object sender, RoutedEventArgs e)
+        {
+            RadioButton rdo = sender as RadioButton;
+            if (rdo.Name.ToString() == "Polish")
+            {
                 polish = true;
             }
-            else if (rdo.Name.ToString() == "English"){
+            else if (rdo.Name.ToString() == "English")
+            {
                 polish = false;
             }
         }
@@ -178,7 +242,10 @@ namespace Projekt_SI_GUI
         private string dPoemSelectedPath2;
         private bool writePoemToFile = false;
         private bool writePoemToScreen = false;
- 
+
+        private bool sentences = true;
+
+        List<string> loadedPoemFiles = new List<string>();
 
         private void CheckBox_Destination(object sender, RoutedEventArgs e){
             CheckBox chx = sender as CheckBox;
@@ -203,28 +270,46 @@ namespace Projekt_SI_GUI
             }
         }
 
-        private void Button_Chose_Poem(object sender, RoutedEventArgs e)
+        private void Button_Chose_Poem_Source(object sender, RoutedEventArgs e)
         {
             Button btn = sender as Button;
-            var dlg = new System.Windows.Forms.FolderBrowserDialog() { Description = "Select directory to open" };
+            var dlg = new System.Windows.Forms.OpenFileDialog() {
+                Filter = "TXT files|*.txt"
+            };
 
             if (dlg.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
-                if (btn.Name.ToString() == "srcPoem")
-                {
-                    sPoemSelectedPath = dlg.SelectedPath;
-                    sPoemFilePath.Text = dlg.SelectedPath;
-                }
-                else if (btn.Name.ToString() == "destPoem")
-                {
-                    dPoemSelectedPath = dlg.SelectedPath;
-                    dPoemFilePath.Text = dlg.SelectedPath;
-                }
+                sPoemSelectedPath = dlg.FileName;
+                sPoemFilePath.Text = dlg.FileName;
+            }
+        }
+        
+        private void Button_Chose_Poem_Dest(object sender, RoutedEventArgs e)
+        {
+            Button btn = sender as Button;
+            var dlg = new System.Windows.Forms.SaveFileDialog() {
+                Filter = "TXT files|*.txt"
+            };
+
+            if (dlg.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                dPoemSelectedPath = dlg.FileName;
+                dPoemFilePath.Text = dlg.FileName;
                 /*else if (btn.Name.ToString() == "destPoem2") {
                     dPoemSelectedPath2 = dlg.SelectedPath;
                     dPoemFilePath2.Text = dlg.SelectedPath;
                 }*/
             }
+        }
+
+        private void LoadPoemFile(object sender, RoutedEventArgs e)
+        {
+            if (sentences) Task.Run(() => sentenceRoot.teach(sPoemSelectedPath, true));
+            else Task.Run(() => sentenceRoot.teachRandomWords(sPoemSelectedPath, true));
+            loadedPoemFiles.Add(System.IO.Path.GetFileName(sPoemSelectedPath));
+            ContentTextBoxPoem.Text = "";
+            lockEverything();
+            startTimer();
         }
 
         private void CheckBox_DestinationPoem(object sender, RoutedEventArgs e){
@@ -249,6 +334,22 @@ namespace Projekt_SI_GUI
         {
             Debug.WriteLine("Ustawiono SentenceNode");
             sentenceRoot = s;
+        }
+
+        private void newSentenceRoot(object sender, RoutedEventArgs e)
+        {
+            var s = sentenceRoot.getSylabizator();
+            sentenceRoot = new SentenceNode("NULL",s);
+            loadedPoemFiles.Clear();
+            updatePoemFileList();
+
+            poemButton.IsEnabled = false;
+            PoemReset.IsEnabled = false;
+        }
+
+        private void timerPoem_TextChanged(object sender, TextChangedEventArgs e)
+        {
+
         }
     }
 }
