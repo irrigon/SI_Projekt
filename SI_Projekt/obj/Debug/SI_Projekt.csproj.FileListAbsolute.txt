@@ -4,3 +4,9 @@ C:\Users\Klient\Documents\Visual Studio 2015\Projects\SI_Projekt\SI_Projekt\bin\
 C:\Users\Klient\Documents\Visual Studio 2015\Projects\SI_Projekt\SI_Projekt\obj\Debug\SI_Projekt.exe
 C:\Users\Klient\Documents\Visual Studio 2015\Projects\SI_Projekt\SI_Projekt\obj\Debug\SI_Projekt.pdb
 C:\Users\Klient\documents\visual studio 2015\Projects\SI_Projekt\SI_Projekt\obj\Debug\SI_Projekt.csprojResolveAssemblyReference.cache
+D:\School\2017_SI\SI_Projekt\SI_Projekt\bin\Debug\SI_Projekt.exe.config
+D:\School\2017_SI\SI_Projekt\SI_Projekt\obj\Debug\SI_Projekt.exe
+D:\School\2017_SI\SI_Projekt\SI_Projekt\obj\Debug\SI_Projekt.pdb
+D:\School\2017_SI\SI_Projekt\SI_Projekt\bin\Debug\SI_Projekt.exe
+D:\School\2017_SI\SI_Projekt\SI_Projekt\bin\Debug\SI_Projekt.pdb
+D:\School\2017_SI\SI_Projekt\SI_Projekt\obj\Debug\SI_Projekt.csprojResolveAssemblyReference.cache

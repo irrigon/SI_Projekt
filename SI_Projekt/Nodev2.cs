@@ -25,14 +25,13 @@ namespace SI_Projekt
 
         public void teach() {
             string[] words = System.IO.File.ReadAllLines(
-                @"C:\Users\Klient\Documents\Visual Studio 2015\Projects\SI_Projekt\SI_Projekt\WordList.txt");
+                @"D:\School\2017_SI\SI_Projekt\SI_Projekt\WordList.txt");
             foreach (string word in words)
                 teachNewWord(word, 0);
         }
 
         public string generateNewWord() {
             string result = "";
-            Random rand = new Random();
             int index, lastLetter = 0;
             int lengthOfWord = rand.Next(3, 12);
             int missesCounter = 0;
@@ -99,7 +98,8 @@ namespace SI_Projekt
             }
             return children;
         }
-
+        
+        Random rand = new Random();
         private char letter { get; }
         private int total { get; set; }
         private int counter { get; set; }
