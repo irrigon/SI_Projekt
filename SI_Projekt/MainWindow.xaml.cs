@@ -16,6 +16,8 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
+using Xceed.Wpf.Toolkit;
+
 using SI_Projekt;
 
 namespace Projekt_SI_GUI
@@ -28,8 +30,9 @@ namespace Projekt_SI_GUI
         public MainWindow()
         {
             InitializeComponent();
-            ContentTextBox.Text = "do tego pola przypisujcie wygenerowane słowa";
-            ContentTextBoxPoem.Text = "do tego pola przypisujcie wygenerowane wiersze";
+            poemButtonStop.IsEnabled = false;
+            //ContentTextBox.Text = "do tego pola przypisujcie wygenerowane słowa";
+            //ContentTextBoxPoem.Text = "do tego pola przypisujcie wygenerowane wiersze";
         }
 
         public delegate void UpdateTextCallback(string message);
@@ -41,7 +44,7 @@ namespace Projekt_SI_GUI
         private void generatePoem(object sender, RoutedEventArgs e)
         {
             int x;
-            Int32.TryParse(WordAmout.Text, out x);
+            Int32.TryParse(VerseAmout.Text, out x);
             Task.Run(() => sentenceRoot.generatePoem(x));
 
             //sentenceRoot.generatePoem(8, 7, 2);

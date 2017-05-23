@@ -23,6 +23,7 @@ namespace SI_Projekt{
 
             // Elementry do tworzenia zdań.
             SentenceNode sentenceRoot = new SentenceNode("NULL", sylabizator, mainWindow);
+            sentenceRoot.teach("english_sentences.txt");
             mainWindow.setSentenceRoot(sentenceRoot);
 
             // The point of no return:
