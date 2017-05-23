@@ -40,8 +40,11 @@ namespace Projekt_SI_GUI
 
         private void generatePoem(object sender, RoutedEventArgs e)
         {
+            int x;
+            Int32.TryParse(WordAmout.Text, out x);
+            Task.Run(() => sentenceRoot.generatePoem(x));
+
             //sentenceRoot.generatePoem(8, 7, 2);
-            Task.Run(() => sentenceRoot.generatePoem(8, 7, 2));
             //await Task.Factory.StartNew(() => sentenceRoot.generatePoem(8, 7, 2));
         }
 
@@ -163,7 +166,7 @@ namespace Projekt_SI_GUI
 
         private void Button_AdvencedSettings(object sender, RoutedEventArgs e)
         {
-            var advancedSettings = new AdvancedSettings();
+            var advancedSettings = new AdvancedSettings(sentenceRoot);
             advancedSettings.Show();
         }
 

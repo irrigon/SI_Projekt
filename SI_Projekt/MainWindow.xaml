@@ -15,7 +15,7 @@
                         <RadioButton Content="angielskich" HorizontalAlignment="Left" Margin="40,5,0,0" VerticalAlignment="Top" Height="22" Checked="RadioButton_Language" Name="English"/>
                     </StackPanel>
                     <Label Content="Generowanie słów:" HorizontalAlignment="Left" Margin="25,107,0,0" VerticalAlignment="Top" Width="129"/>
-                    <TextBox x:Name="WordAmout" HorizontalAlignment="Left" Height="23" Margin="25,222,0,0" TextWrapping="Wrap" Text="10" VerticalAlignment="Top" Width="120" TextChanged="getAmout_TextChanged"/>
+                    <TextBox x:Name="WordAmout" HorizontalAlignment="Left" Height="23" Margin="25,222,0,0" TextWrapping="Wrap" Text="8" VerticalAlignment="Top" Width="120" TextChanged="getAmout_TextChanged"/>
                     <Label Content="Liczba słów:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="25,196,0,0" Width="120"></Label>
                     <TextBox ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                 ScrollViewer.VerticalScrollBarVisibility="Visible" Margin="272,10,10,10" x:Name="ContentTextBox"/>
@@ -38,7 +38,7 @@
                     <Label Content="Generowanie wierszy:" HorizontalAlignment="Left" Margin="25,64,0,0" VerticalAlignment="Top" Width="129" RenderTransformOrigin="0.55,-1.077"/>
                     <TextBox x:Name="VerseAmout" HorizontalAlignment="Left" Height="23" Margin="25,166,0,0" TextWrapping="Wrap" Text="10" VerticalAlignment="Top" Width="120" TextChanged="getAmout_TextChanged"/>
                     <Label Content="Liczba wersów:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="21,140,0,0" Width="120"/>
-                    <TextBox ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                    <TextBox ScrollViewer.HorizontalScrollBarVisibility="Disabled" IsReadOnly="true"
             		ScrollViewer.VerticalScrollBarVisibility="Visible" Margin="272,10,10,10" x:Name="ContentTextBoxPoem"/>
                     <CheckBox Content="Wypisz =&gt;" HorizontalAlignment="Left" Margin="44,203,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.154,-1.188" Checked="CheckBox_DestinationPoem" x:Name="toTextBoxPoem" Unchecked="UnheckBox_DestinationPoem"/>
                     <CheckBox Content="Zapisz do pliku" HorizontalAlignment="Left" Margin="44,224,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.154,-1.188" Checked="CheckBox_DestinationPoem" x:Name="toFilePoem" Unchecked="UnheckBox_DestinationPoem"/>
