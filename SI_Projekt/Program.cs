@@ -12,8 +12,9 @@ namespace SI_Projekt{
             Sylabizator.Sylabizator sylabizator = new Sylabizator.Sylabizator();
 
             //findAllEnglishSentences(100);
+            //findAllPolishSentences(12);
             //cutStrangeWords();
-            
+
             Nodev2 root = new Nodev2(' ');
             root.createGraph();
             root.teach();
@@ -26,6 +27,7 @@ namespace SI_Projekt{
             Console.Write("\n");
 
             SentenceNode sentenceRoot = new SentenceNode("NULL",sylabizator);
+            //sylabizator.Model.updateLanguage(Sylabizator.SylabizatorLanguage.Polish);
             sentenceRoot.teach("english_sentences.txt");
 
             for (int i = 0; i < 100; i++){
@@ -34,12 +36,12 @@ namespace SI_Projekt{
 
             Console.Write("\n");
 
-            sentenceRoot.teachRandomWords("strange_words.txt", 40);
+            //sentenceRoot.teachRandomWords("strange_words.txt", 50);
 
             //List<string> poem = sentenceRoot.generatePoem(4, 15, 4);
             List<string> poem = sentenceRoot.generatePoem(8, 7, 2);
             //List<string> poem = sentenceRoot.generatePoem(9, 4, 3);
-            //List<string> poem = sentenceRoot.generatePoem(24, 2, 3);
+            //List<string> poem = sentenceRoot.generatePoem(24, 3, 2);
 
             Console.Write("\n\n");
             for (int i = 0; i < poem.Count; i++) {
@@ -73,6 +75,36 @@ namespace SI_Projekt{
                     while (isDigit(line[k])) k++;
                     while (!isLetter(line[k])) k++;
                     if (line.Substring(k).StartsWith("eng")) {
+                        writer.WriteLine(line.Substring(k+4));
+                    }
+                }
+            }
+
+            Console.WriteLine("Sentence picking finished.");
+        }
+
+        static void findAllPolishSentences(int n) {
+            // Ditto.
+            // Jan Grzywacz.
+
+            string pathIn = Path.Combine(Environment.CurrentDirectory, "sentences.txt");
+            string pathOut = Path.Combine(Environment.CurrentDirectory, "polish_sentences.txt");
+            FileStream istream = new FileStream(pathIn, FileMode.Open);
+            FileStream ostream = new FileStream(pathOut, FileMode.Create);
+            StreamReader reader = new StreamReader(istream);
+            StreamWriter writer = new StreamWriter(ostream);
+            string line;
+
+            int i = 0;
+
+            while ((line = reader.ReadLine()) != null) {
+                // Copy every nth line.
+                if ((i++)%n == 0) {
+                    // Copy only "pol" lines.
+                    int k = 0;
+                    while (isDigit(line[k])) k++;
+                    while (!isLetter(line[k])) k++;
+                    if (line.Substring(k).StartsWith("pol")) {
                         writer.WriteLine(line.Substring(k+4));
                     }
                 }

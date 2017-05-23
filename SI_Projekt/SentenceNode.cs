@@ -147,6 +147,7 @@ namespace SI_Projekt
                 // Sytuacja awaryjna - nie udało się stworzenie wersu.
                 if (verse == null) {
                     megaResetCounter++;
+                    //megaResetCounter = megaResetMax;
                     bool oneTime = true;
                     while ((((megaResetCounter >= megaResetMax)) || (oneTime)) && (i > 0)) {
                         // "Cofamy się w rozwoju", usuwając ostatni wers.
@@ -154,12 +155,12 @@ namespace SI_Projekt
                         if (i != 0) {
                             Console.Write("|");
                             poem.RemoveAt(i-1);
-                            i -= 1;
+                            i --;
                         }
 
                         // Jeżeli jakiś rym dopiero co
                         // został stworzony, to kasujemy go.
-                        currentRhymeWords.Pop();
+                        if (currentRhymeWords.Count > 0) currentRhymeWords.Pop();
                         if (++rhymeLife == maxRhymeLife) {
                             megaResetCounter = 0;
                             currentRhymeWords.Clear();
@@ -188,8 +189,7 @@ namespace SI_Projekt
             mini_repeat_counter = 0;
             repeat_counter = 0;
             big_repeat_counter = 0;
-
-            string result;
+            
             int syllablesLeft;
             int lettersLeft;
 
@@ -229,26 +229,34 @@ namespace SI_Projekt
 
                     if (lastWord == null) {
                         // Znajdujemy pierwsze słowo.
-                        child = randomChildWithSyllables(syllablesLeft, lettersLeft, currentRhymeWords);
+                        child = randomChildWithSyllables(
+                            syllablesLeft, result.Length, maxLetters, currentRhymeWords);
                         // Jeżeli nie znaleźliśmy nic, możemy sobie już teraz odpuścić.
                         if (child == null) return null;
                         newWord = child.word;
                     }
                     else {
-                        // Znajdujemy kolejne.
-                        index = findChildIndex(lastWord);
-                        child = (children[index].randomChildWithSyllables(
-                            syllablesLeft, lettersLeft, currentRhymeWords));
-                        
-                        if (child == null) undo = true;
-                        else newWord = child.word;
-                        //child = randomChildWithSyllables(syllablesLeft, currentRhyme);
+                        if ((mini_repeat_max > 0) && (mini_repeat_counter == mini_repeat_max)) {
+                            mini_repeat_counter = 0;
+                            undo = true;
+                        }
+                        else {
+                            // Znajdujemy kolejne.
+                            index = findChildIndex(lastWord);
+                            child = (children[index].randomChildWithSyllables(
+                                syllablesLeft, result.Length, maxLetters, currentRhymeWords));
+
+                            if (child == null) undo = true;
+                            else newWord = child.word;
+                            //child = randomChildWithSyllables(syllablesLeft, currentRhyme);
+                        }
                     }
 
                     if (undo == true) {
                         // Cofanie akcji. Usuwamy połączenie między
                         // poprzednim węzłem, a tym, który się "nie sprawdził".
                         undo = false;
+                        mini_repeat_counter++;
                         repeat_counter++;
 
                         String tmp = previousLastWord.Pop();
@@ -278,6 +286,7 @@ namespace SI_Projekt
 
                         // Zmiana liczby pozostałych nam sylab oraz liter.
                         syllables = newWord.Syllables(sylabizator);
+
                         lettersLeft -= newWord.Length+1;
                         syllablesLeft -= syllables.Length;
                         lastWord = newWord;
@@ -297,7 +306,7 @@ namespace SI_Projekt
             return result;
         }
 
-        protected SentenceNode randomChildWithSyllables(int syllablesLeft, int lLeft, Stack<string> rhymes){
+        protected SentenceNode randomChildWithSyllables(int syllablesLeft, int lTotal, int maxL, Stack<string> rhymes){
             // Znajdywanie losowego dziecka, z dwoma ograniczeniami.
             // Nie może być w nim więcej sylab niż podana liczba,
             // i końcową sylabą musi być podana (chyba, że damy null).
@@ -312,14 +321,12 @@ namespace SI_Projekt
             int newTotal = 0;
 
             // Wybieramy możliwych kandydatów do nowej listy.
-            if (mini_repeat_counter < mini_repeat_max) {
-                for (int i = 1; i < children.Count; i++) {
-                    if ((validateWord(getWord(i), syllablesLeft, lLeft, rhymes)) && (!marked[i])) {
-                        newChildren.Add(children[i]);
-                        newCounters.Add(counters[i]);
-                        newTotal += counters[i];
-                        //Console.WriteLine(children[i].word);
-                    }
+            for (int i = 1; i < children.Count; i++) {
+                if ((validateWord(getWord(i), syllablesLeft, lTotal, maxL, rhymes)) && (!marked[i])) {
+                    newChildren.Add(children[i]);
+                    newCounters.Add(counters[i]);
+                    newTotal += counters[i];
+                    //Console.WriteLine(children[i].word);
                 }
             }
 
@@ -345,7 +352,7 @@ namespace SI_Projekt
             return newChild;
         }
 
-        protected bool validateWord(string word, int syllablesLeft, int lettersLeft, Stack<string> rhymes) {
+        protected bool validateWord(string word, int syllablesLeft, int lettersTotal, int maxLetters, Stack<string> rhymes) {
             // Sprawdzanie warunków dla funkcji randomChildWithSyllables.
             // Jan Grzywacz.
 
@@ -360,29 +367,32 @@ namespace SI_Projekt
             if (syllables.Length > syllablesLeft) return false;
 
             // Jeśli słowo wypełni nam wers do końca...
-            foreach (string rhyme in rhymes) {
-                if ((syllables.Length == syllablesLeft) && (rhyme != null)) {
-                    //BOGUSmini_repeat_counter++;
+            if ((syllables.Length == syllablesLeft)) {
+                    
+                // Warunek 2 - wersy nie mogą różnić się długością o więcej niż verseThreshold.
+                if ((maxLetters > 0) && (Math.Abs(lettersTotal + word.Length + 1 - maxLetters) > verseThreshold)) return false;
+                //if ((maxLetters >= 0) && (Math.Abs(word.Length-lettersLeft) > verseThreshold))return false;
+                //Console.WriteLine(lettersTotal + " " + word + " " + word.Length + " " + maxLetters);
 
-                    // Warunek 2 - wersy nie mogą różnić się długością o więcej niż verseThreshold.
-                    if ((maxLetters >= 0) && (Math.Abs(word.Length-lettersLeft) > verseThreshold))return false;
+                if  (rhymes != null) {
+                    foreach (string rhyme in rhymes) {
+                        // Warunek 3 - słowo nie może być takie same jak rym ani zawierać się jedno w drugim.
+                        if (String.Compare(rhyme.LastN(word.Length), word.LastN(rhyme.Length)) == 0) return false;
 
-                    // Warunek 3 - słowo nie może być takie same jak rym ani zawierać się jedno w drugim.
-                    if (String.Compare(rhyme.LastN(word.Length), word.LastN(rhyme.Length)) == 0) return false;
+                        // Porównujemy od końca do ostatniej samogłoski.
+                        int rhymeSoundLength = rhyme.Length - rhyme.LastVowels();
+                        int wordSoundLength = word.Length - word.LastVowels();
+                        int finalLength = Math.Max(rhymeSoundLength, wordSoundLength);
 
-                    // Porównujemy od końca do ostatniej samogłoski.
-                    int compareLength = rhyme.Length-rhyme.LastVowels();
+                        string rhymeSound = rhyme.LastN(finalLength);
+                        string wordSound = word.LastN(finalLength);
 
-                    string rhymeSound = rhyme.LastN(compareLength);
-                    int soundLength = Math.Min(rhymeSound.Length, compareLength);
-                    string wordSound = syllables[syllables.Length - 1].LastN(soundLength);
-
-                    // Warunek 4 - ostatnia sylaba musi być taka sama jak rym.
-                    if (String.Compare(rhymeSound, wordSound) != 0) return false;
+                        // Warunek 4 - ostatnia sylaba musi być taka sama jak rym.
+                        if (String.Compare(rhymeSound, wordSound) != 0) return false;
+                    }
                 }
             }
 
-            mini_repeat_counter--;
             return true;
         }
 
@@ -568,12 +578,14 @@ namespace SI_Projekt
         protected int rhymeLife;
         protected int maxRhymeLife;
 
-        int verseThreshold = 2;
+        int verseThreshold = 1;
 
+        string result;
+        
         int mini_repeat_counter = 0;
         int repeat_counter = 0;
         int big_repeat_counter = 0;
-        int mini_repeat_max = 50;
+        int mini_repeat_max = 5;//10 LESS = MORE CREATIVE RHYMES!
         int repeat_max = 100;//200;
         int big_repeat_max = 10;
     }
