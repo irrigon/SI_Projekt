@@ -1,4 +1,5 @@
-﻿using System;
+﻿
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,6 +13,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
+using SI_Projekt;
+
 namespace Projekt_SI_GUI
 {
     /// <summary>
@@ -19,16 +22,32 @@ namespace Projekt_SI_GUI
     /// </summary>
     public partial class AdvancedSettings : Window
     {
-        public AdvancedSettings()
+        public AdvancedSettings(SentenceNode sentenceRoot)
         {
+            this.sentenceRoot = sentenceRoot;
             InitializeComponent();
+            
+            sleInPoem = sentenceRoot.getSyllablesInVerse();
+            rhymLife = sentenceRoot.getRhymeLife();
+            lenStability = sentenceRoot.getVerseThreshold();
+            amountTests1 = sentenceRoot.getMiniRepeatMax();
+            amountTests2 = sentenceRoot.getRepeatMax();
+            amountTests3 = sentenceRoot.getBigRepeatMax();
+
+            setAmounts();
         }
 
         private void Button_Click(object sender, RoutedEventArgs e){
             Button btn = sender as Button;
             if (btn.Name.ToString() == "OK")
             {
-
+                sentenceRoot.setSyllablesInVerse(sleInPoem);
+                sentenceRoot.setRhymeLife(rhymLife);
+                sentenceRoot.setVerseThreshold(lenStability);
+                sentenceRoot.setMiniRepeatMax(amountTests1);
+                sentenceRoot.setRepeatMax(amountTests2);
+                sentenceRoot.setBigRepeatMax(amountTests3);
+                this.Close();
             }
             else if (btn.Name.ToString() == "Anuluj")
             {
@@ -36,12 +55,24 @@ namespace Projekt_SI_GUI
             }
         }
 
+        public SentenceNode sentenceRoot;
+
         public static int sleInPoem { get; set; }    // liczba sylab w wierszu
         public static int rhymLife { get; set; }     // życie rymu
         public static int lenStability { get; set; } // stabliność długości wiersza
         public static int amountTests1 { get; set; } // ilość prób1
         public static int amountTests2 { get; set; } // ilość prób2
         public static int amountTests3 { get; set; } // ilość prób3
+
+        private void setAmounts()
+        {
+            AmountSleInRow.Text = sleInPoem.ToString();
+            RythmLife.Text = rhymLife.ToString();
+            lenSability.Text = lenStability.ToString();
+            AmountTests1.Text = amountTests1.ToString();
+            AmountTests2.Text = amountTests2.ToString();
+            AmountTests3.Text = amountTests3.ToString();
+        }
 
         private void getAmout_TextChanged(object sender, TextChangedEventArgs e)
         {

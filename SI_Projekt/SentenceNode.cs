@@ -191,6 +191,9 @@ namespace SI_Projekt
             return poem;
         }
 
+        public List<string> generatePoem(int length)
+        { return generatePoem(length,syllablesInVerse,maxRhymeLife); }
+
         protected string generateNewVerse(int maxSyllables, int maxLetters) {
             // Generowanie jednego wersetu - podobne do generateSentence,
             // ale używa zaimportowanego sylabizatora w doborze słów.
@@ -604,18 +607,34 @@ namespace SI_Projekt
 
         protected Stack<string> currentRhymeWords;
         protected int maxLetters;
+        protected int syllablesInVerse = 7;
+        protected int maxRhymeLife = 2;
+
         protected int rhymeLife;
-        protected int maxRhymeLife;
 
         int verseThreshold = 1;
 
         string result;
-        
-        int mini_repeat_counter = 0;
-        int repeat_counter = 0;
-        int big_repeat_counter = 0;
-        int mini_repeat_max = 5;//10 LESS = MORE CREATIVE RHYMES!
-        int repeat_max = 100;//200;
-        int big_repeat_max = 10;
+
+        protected int mini_repeat_counter = 0;
+        protected int repeat_counter = 0 ;
+        protected int big_repeat_counter = 0;
+        protected int mini_repeat_max = 5;//10 LESS = MORE CREATIVE RHYMES!
+        protected int repeat_max = 100;//200;
+        protected int big_repeat_max = 10;
+
+        public int getSyllablesInVerse() { return syllablesInVerse; }
+        public int getRhymeLife() { return maxRhymeLife; }
+        public int getVerseThreshold() { return verseThreshold; }
+        public int getMiniRepeatMax() { return mini_repeat_max; }
+        public int getRepeatMax() { return repeat_max; }
+        public int getBigRepeatMax() { return big_repeat_max; }
+
+        public void setSyllablesInVerse(int x) { syllablesInVerse = x; }
+        public void setRhymeLife(int x) { maxRhymeLife = x; }
+        public void setVerseThreshold(int x) { verseThreshold = x; }
+        public void setMiniRepeatMax(int x) { mini_repeat_max = x; }
+        public void setRepeatMax(int x) { repeat_max = x; }
+        public void setBigRepeatMax(int x) { big_repeat_max = x; }
     }
 }
