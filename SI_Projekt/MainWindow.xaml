@@ -6,7 +6,7 @@
         Title="Generator słów" Height="620.167" Width="966">
     <Grid>
         <TabControl HorizontalAlignment="Left" Height="508" VerticalAlignment="Top" Width="904" Margin="28,26,0,0">
-            <TabItem Header="Słowa" HorizontalAlignment="Right" Width="49">
+            <TabItem x:Name="wordTab" Header="Słowa" HorizontalAlignment="Right" Width="49">
                 <Grid Background="#FFE5E5E5">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="12.8"/>
@@ -18,8 +18,8 @@
                     <TextBox x:Name="sFilePath" HorizontalAlignment="Left" Height="23" TextWrapping="NoWrap" Text="" VerticalAlignment="Top" Width="120" Margin="11.2,69,0,0" Grid.ColumnSpan="2" Grid.Column="1" />
                     <Button Content="Wybierz" HorizontalAlignment="Left" Margin="80.2,69,0,0" VerticalAlignment="Top" Width="75" RenderTransformOrigin="0.213,-0.182" Click="Button_Chose" Name="src" Grid.Column="2" Grid.ColumnSpan="2"/>
                     <StackPanel Margin="0,0,0.4,-0.2" Grid.ColumnSpan="4">
-                        <RadioButton Content="polskich" HorizontalAlignment="Left" Margin="40,135,0,0" VerticalAlignment="Top" Height="19" Checked="RadioButton_Language" Name="Polish"/>
-                        <RadioButton Content="angielskich" HorizontalAlignment="Left" Margin="40,5,0,0" VerticalAlignment="Top" Height="22" Checked="RadioButton_Language" Name="English"/>
+                        <RadioButton x:Name="polishPoemRadio" Content="polskich" HorizontalAlignment="Left" Margin="40,135,0,0" VerticalAlignment="Top" Height="19" Checked="RadioButton_Language"/>
+                        <RadioButton x:Name="englishPoemRadio" Content="angielskich" HorizontalAlignment="Left" Margin="40,5,0,0" VerticalAlignment="Top" Height="22" Checked="RadioButton_Language"/>
                     </StackPanel>
                     <Label Content="Generowanie słów:" HorizontalAlignment="Left" Margin="11.2,107,0,0" VerticalAlignment="Top" Width="130" Grid.ColumnSpan="2" Grid.Column="1"/>
                     <wpfTool:DecimalUpDown x:Name="WordAmout" HorizontalAlignment="Left" Height="23" Margin="11.2,222,0,0" Minimum="1" Maximum="1000000" Text="8" VerticalAlignment="Top" Width="120" Grid.ColumnSpan="2" Grid.Column="1"/>
@@ -33,31 +33,36 @@
                     <Label Content="Plik docelowy:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="11.2,321,0,0" Width="166" Grid.ColumnSpan="3" Grid.Column="1"/>
                 </Grid>
             </TabItem>
-            <TabItem Header="Wiersze" HorizontalAlignment="Left" Margin="-1.8,-2,-1.6,0" Width="57">
+            <TabItem x:Name="poemTab" Header="Wiersze" HorizontalAlignment="Left" Margin="-1.8,-2,-1.6,0" Width="57">
                 <Grid Background="#FFE5E5E5" Height="476" Width="894">
-                    <Label Content="Plik źrółowy:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="25,10,0,0" Width="166"/>
-                    <TextBox x:Name="sPoemFilePath" HorizontalAlignment="Left" Height="23" TextWrapping="NoWrap" Text="" VerticalAlignment="Top" Width="120" Margin="21,36,0,0" />
-                    <Button Content="Wybierz" HorizontalAlignment="Left" Margin="146,36,0,0" VerticalAlignment="Top" Width="75" RenderTransformOrigin="0.213,-0.182" Click="Button_Chose_Poem" Name="srcPoem"/>
-                    <StackPanel>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="23*"/>
+                        <ColumnDefinition Width="275*"/>
+                    </Grid.ColumnDefinitions>
+                    <Label Content="Plik źrółowy:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="25,10,0,0" Width="166" Grid.ColumnSpan="2"/>
+                    <TextBox x:Name="sPoemFilePath" IsReadOnly="true" HorizontalAlignment="Left" Height="23" TextWrapping="NoWrap" Text="" VerticalAlignment="Top" Width="120" Margin="21,36,0,0" Grid.ColumnSpan="2" />
+                    <Button Content="Wybierz" HorizontalAlignment="Left" Margin="76.7,36,0,0" VerticalAlignment="Top" Width="75" RenderTransformOrigin="0.213,-0.182" Click="Button_Chose_Poem" Name="srcPoem" Grid.Column="1"/>
+                    <StackPanel Grid.ColumnSpan="2">
                         <RadioButton Content="polskich" HorizontalAlignment="Left" Margin="40,90,0,0" VerticalAlignment="Top" Height="19" Checked="RadioButton_Language" x:Name="PolishPoem" RenderTransformOrigin="0.475,-2.053"/>
-                        <RadioButton Content="angielskich" HorizontalAlignment="Left" Margin="40,5,0,0" VerticalAlignment="Top" Height="22" Checked="RadioButton_Language" x:Name="EnglishPoem"/>
+                        <RadioButton Content="angielskich" HorizontalAlignment="Left" Margin="40,5,0,0" VerticalAlignment="Top" Height="22" Checked="RadioButton_Language" x:Name="EnglishPoem" IsChecked="True"/>
                     </StackPanel>
-                    <Label Content="Generowanie wierszy:" HorizontalAlignment="Left" Margin="25,64,0,0" VerticalAlignment="Top" Width="129" RenderTransformOrigin="0.55,-1.077"/>
-                    <wpfTool:DecimalUpDown x:Name="VerseAmout" HorizontalAlignment="Left" Height="23" Margin="25,166,0,0" Minimum="1" Maximum="1000000" Text="8" VerticalAlignment="Top" Width="120"/>
-                    <Label Content="Liczba wersów:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="21,140,0,0" Width="120"/>
+                    <Label Content="Generowanie wierszy:" HorizontalAlignment="Left" Margin="25,64,0,0" VerticalAlignment="Top" Width="129" RenderTransformOrigin="0.55,-1.077" Grid.ColumnSpan="2"/>
+                    <wpfTool:DecimalUpDown x:Name="VerseAmout" HorizontalAlignment="Left" Height="23" Margin="25,166,0,0" Minimum="1" Maximum="1000000" Text="8" VerticalAlignment="Top" Width="120" Grid.ColumnSpan="2"/>
+                    <Label Content="Liczba wersów:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="21,140,0,0" Width="120" Grid.ColumnSpan="2"/>
                     <TextBox ScrollViewer.HorizontalScrollBarVisibility="Disabled" IsReadOnly="true"
-            		ScrollViewer.VerticalScrollBarVisibility="Visible" Margin="272,10,10,10" x:Name="ContentTextBoxPoem"/>
-                    <CheckBox Content="Wypisz =&gt;" HorizontalAlignment="Left" Margin="44,203,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.154,-1.188" Checked="CheckBox_DestinationPoem" x:Name="toTextBoxPoem" Unchecked="UnheckBox_DestinationPoem"/>
-                    <CheckBox Content="Zapisz do pliku" HorizontalAlignment="Left" Margin="44,224,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.154,-1.188" Checked="CheckBox_DestinationPoem" x:Name="toFilePoem" Unchecked="UnheckBox_DestinationPoem"/>
-                    <TextBox x:Name="dPoemFilePath" HorizontalAlignment="Left" Height="23" TextWrapping="NoWrap" Text="" VerticalAlignment="Top" Width="120" Margin="21,271,0,0" />
-                    <Button Content="Wybierz" HorizontalAlignment="Left" Margin="146,272,0,0" VerticalAlignment="Top" Width="75" RenderTransformOrigin="0.213,-0.182" Click="Button_Chose_Poem" x:Name="destPoem"/>
-                    <Label Content="Plik docelowy:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="25,245,0,0" Width="166"/>
-                    <Label Content="Plik docelowy 2:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="25,304,0,0" Width="166"/>
-                    <TextBox x:Name="dPoemFilePath2" HorizontalAlignment="Left" Height="23" TextWrapping="NoWrap" Text="" VerticalAlignment="Top" Width="120" Margin="21,330,0,0" />
-                    <Button Content="Wybierz" HorizontalAlignment="Left" Margin="146,331,0,0" VerticalAlignment="Top" Width="75" RenderTransformOrigin="0.213,-0.182" Click="Button_Chose_Poem" x:Name="destPoem2"/>
-                    <Button Content="Ustawienia zaawansowane" HorizontalAlignment="Left" Margin="21,388,0,0" VerticalAlignment="Top" Width="200" Click="Button_AdvencedSettings" />
-                    <Button x:Name="poemButton" Content="Generuj" HorizontalAlignment="Left" Margin="25,429,0,0" VerticalAlignment="Top" Width="75" Click="generatePoem"/>
-                    <Button x:Name="poemButtonStop" Content="Stop" HorizontalAlignment="Left" Margin="116,429,0,0" VerticalAlignment="Top" Width="75" Click="generatePoem"/>
+            		ScrollViewer.VerticalScrollBarVisibility="Visible" Margin="202.7,10,9,10" x:Name="ContentTextBoxPoem" Grid.Column="1"/>
+                    <CheckBox Content="Wypisz =&gt;" HorizontalAlignment="Left" Margin="77.2,322,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.154,-1.188" Checked="CheckBox_DestinationPoem" x:Name="toTextBoxPoem" Unchecked="UnheckBox_DestinationPoem" Grid.Column="1"/>
+                    <CheckBox Content="Zapisz do pliku" HorizontalAlignment="Left" Margin="25,322,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.154,-1.188" Checked="CheckBox_DestinationPoem" x:Name="toFilePoem" Unchecked="UnheckBox_DestinationPoem" Grid.ColumnSpan="2"/>
+                    <Label Content="Plik docelowy:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="25,337,0,0" Width="166" Grid.ColumnSpan="2"/>
+                    <TextBox x:Name="dPoemFilePath" IsReadOnly="true" HorizontalAlignment="Left" Height="23" TextWrapping="NoWrap" Text="" VerticalAlignment="Top" Width="120" Margin="21,365,0,0" Grid.ColumnSpan="2" />
+                    <Button x:Name="destPoem" Content="Wybierz" HorizontalAlignment="Left" Margin="77.2,368,0,0" VerticalAlignment="Top" Width="75" RenderTransformOrigin="0.213,-0.182" Click="Button_Chose_Poem" Grid.Column="1"/>
+                    <Button x:Name="optionsButton" Content="Ustawienia zaawansowane" HorizontalAlignment="Left" Margin="21,401,0,0" VerticalAlignment="Top" Width="200" Click="Button_AdvencedSettings" Grid.ColumnSpan="2" />
+                    <Button x:Name="poemButton" Content="Generuj" HorizontalAlignment="Left" Margin="25,434,0,0" VerticalAlignment="Top" Width="75" Click="generatePoem" Grid.ColumnSpan="2"/>
+                    <Button x:Name="poemButtonStop" Content="Stop" HorizontalAlignment="Left" Margin="47.2,434,0,0" VerticalAlignment="Top" Width="75" Click="stopPoem" Grid.Column="1"/>
+                    <CheckBox x:Name="verseChecker" Content="Kontroluj ilość sylab w wersie." HorizontalAlignment="Left" Margin="21,206,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.154,-1.188" Grid.ColumnSpan="2"/>
+                    <CheckBox x:Name="letterChecker" Content="Kontroluj ilość liter w wersie." HorizontalAlignment="Left" Margin="21,226,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.154,-1.188" Grid.ColumnSpan="2"/>
+                    <CheckBox x:Name="identChecker" Content="Nie pozwalaj na identyczne rymy." HorizontalAlignment="Left" Margin="21,266,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.154,-1.188" Grid.ColumnSpan="2"/>
+                    <CheckBox x:Name="rhymeChecker" Content="Włącz znajdywanie rymów." HorizontalAlignment="Left" Margin="21,246,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.154,-1.188" Grid.ColumnSpan="2"/>
                 </Grid>
             </TabItem>
         </TabControl>

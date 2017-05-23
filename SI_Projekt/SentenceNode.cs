@@ -135,6 +135,8 @@ namespace SI_Projekt
             // są automatycznie.
             // Jan Grzywacz.
 
+            stopped = false;
+
             if ((length <= 0) || (syllables <= 0)) return null;
 
             poem = new List<string>();
@@ -186,13 +188,24 @@ namespace SI_Projekt
                     // Wyświetlanie stanu wierszy w oknie.
                     updateWindowText(poem,"");
                 }
+
+                if (stopped) break;
             }
 
+            unlockWindow();
             return poem;
         }
 
-        public List<string> generatePoem(int length)
-        { return generatePoem(length,syllablesInVerse,maxRhymeLife); }
+        public List<string> generatePoem(int length, bool isPolish)
+        {
+            // Do uruchamiania z WPF-a.
+            polishRhymes = isPolish;
+
+            if (isPolish) sylabizator.Model.updateLanguage(Sylabizator.SylabizatorLanguage.Polish);
+            else sylabizator.Model.updateLanguage(Sylabizator.SylabizatorLanguage.English);
+
+            return generatePoem(length,syllablesInVerse,maxRhymeLife);
+        }
 
         protected string generateNewVerse(int maxSyllables, int maxLetters) {
             // Generowanie jednego wersetu - podobne do generateSentence,
@@ -308,11 +321,13 @@ namespace SI_Projekt
 
                     // Wyświetlanie stanu wierszy w oknie.
                     updateWindowText(poem,result);
+                    if (stopped) break;
                 }
 
                 // Finalizacja i walidacja zdania.
                 double myRand = rand.NextDouble();
                 result += (myRand > 0.5) ? ((myRand > 0.75) ? "?" : "!") : ".";
+                if (stopped) break;
             } while (repeat);
 
             // Aktualizowanie rymu.
@@ -381,31 +396,32 @@ namespace SI_Projekt
             }*/
 
             // Warunek 1 - sylab nie może być więcej niż zostało do końca wersetu.
-            if (syllables.Length > syllablesLeft) return false;
+            if ((checkSyllables) && (syllables.Length > syllablesLeft)) return false;
 
             // Jeśli słowo wypełni nam wers do końca...
-            if ((syllables.Length == syllablesLeft)) {
+            if ((syllables.Length >= syllablesLeft)) {
                     
                 // Warunek 2 - wersy nie mogą różnić się długością o więcej niż verseThreshold.
-                if ((maxLetters > 0) && (Math.Abs(lettersTotal + word.Length + 1 - maxLetters) > verseThreshold)) return false;
+                if ((checkMaxLetters) && (maxLetters > 0)
+                    && (Math.Abs(lettersTotal + word.Length + 1 - maxLetters) > verseThreshold)) return false;
                 //if ((maxLetters >= 0) && (Math.Abs(word.Length-lettersLeft) > verseThreshold))return false;
                 //Console.WriteLine(lettersTotal + " " + word + " " + word.Length + " " + maxLetters);
 
-                if  (rhymes != null) {
+                if ((checkRhyme) && (rhymes != null)) {
                     foreach (string rhyme in rhymes) {
                         // Warunek 3 - słowo nie może być takie same jak rym ani zawierać się jedno w drugim.
-                        if (String.Compare(rhyme.LastN(word.Length), word.LastN(rhyme.Length)) == 0) return false;
+                        if ((checkIdentical) && (String.Compare(rhyme.LastN(word.Length), word.LastN(rhyme.Length)) == 0)) return false;
 
                         // Porównujemy od końca do ostatniej samogłoski.
-                        int rhymeSoundLength = rhyme.Length - rhyme.LastVowels();
-                        int wordSoundLength = word.Length - word.LastVowels();
+                        int rhymeSoundLength = rhyme.Length - (polishRhymes ? rhyme.LastVowels() : rhyme.LastVowelsWeak());
+                        int wordSoundLength = word.Length - (polishRhymes ? word.LastVowels() : word.LastVowelsWeak());
                         int finalLength = Math.Max(rhymeSoundLength, wordSoundLength);
 
                         string rhymeSound = rhyme.LastN(finalLength);
                         string wordSound = word.LastN(finalLength);
 
                         // Warunek 4 - ostatnia sylaba musi być taka sama jak rym.
-                        if (String.Compare(rhymeSound, wordSound) != 0) return false;
+                        if ((String.Compare(rhymeSound, wordSound) != 0)) return false;
                     }
                 }
             }
@@ -585,13 +601,35 @@ namespace SI_Projekt
 
         MainWindow window;
 
+        public void stop() { stopped = true; }
+
         protected void updateWindowText(List<string> text, string tmp) {
             if ((window != null) && (text.Count > 0))
                 window.ContentTextBoxPoem.Dispatcher.Invoke(
                     new MainWindow.UpdateTextCallback(window.updatePoem),
                         new object[] { text.Aggregate(joinStrings)+"\n"+tmp });
         }
-        
+
+        protected void unlockWindow() {
+            if (window != null)
+                window.ContentTextBoxPoem.Dispatcher.Invoke(
+                    new MainWindow.UpdateVoidCallback(window.unlockEverything),
+                        new object[] {  });
+        }
+
+        protected static bool checkSyllables = true;
+        protected static bool checkMaxLetters = true;
+        protected static bool checkIdentical = true;
+        protected static bool checkRhyme = true;
+
+        public void setChecks(bool syl, bool let, bool rhyme, bool ident) {
+            checkSyllables = syl;
+            checkMaxLetters = let;
+            checkIdentical = ident;
+            checkRhyme = rhyme;
+            Console.WriteLine(checkRhyme);
+        }
+
         protected Random rand = new Random();
         protected string word { get; }
         protected int total { get; set; }
@@ -615,6 +653,9 @@ namespace SI_Projekt
         int verseThreshold = 1;
 
         string result;
+
+        bool stopped;
+        bool polishRhymes;
 
         protected int mini_repeat_counter = 0;
         protected int repeat_counter = 0 ;

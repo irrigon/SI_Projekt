@@ -41,12 +41,12 @@ namespace Projekt_SI_GUI
             Button btn = sender as Button;
             if (btn.Name.ToString() == "OK")
             {
-                sentenceRoot.setSyllablesInVerse(sleInPoem);
-                sentenceRoot.setRhymeLife(rhymLife);
-                sentenceRoot.setVerseThreshold(lenStability);
-                sentenceRoot.setMiniRepeatMax(amountTests1);
-                sentenceRoot.setRepeatMax(amountTests2);
-                sentenceRoot.setBigRepeatMax(amountTests3);
+                sentenceRoot.setSyllablesInVerse((int)AmountSleInRow.Value);
+                sentenceRoot.setRhymeLife((int)RythmLife.Value);
+                sentenceRoot.setVerseThreshold((int)lenSability.Value);
+                sentenceRoot.setMiniRepeatMax((int)AmountTests1.Value);
+                sentenceRoot.setRepeatMax((int)AmountTests2.Value);
+                sentenceRoot.setBigRepeatMax((int)AmountTests3.Value);
                 this.Close();
             }
             else if (btn.Name.ToString() == "Anuluj")

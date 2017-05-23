@@ -30,12 +30,21 @@ namespace Projekt_SI_GUI
         public MainWindow()
         {
             InitializeComponent();
+            poemButton.IsEnabled = true;
             poemButtonStop.IsEnabled = false;
+
+            verseChecker.IsChecked = true;
+            letterChecker.IsChecked = true;
+            identChecker.IsChecked = true;
+            rhymeChecker.IsChecked = true;
+
             //ContentTextBox.Text = "do tego pola przypisujcie wygenerowane słowa";
             //ContentTextBoxPoem.Text = "do tego pola przypisujcie wygenerowane wiersze";
         }
 
         public delegate void UpdateTextCallback(string message);
+        public delegate void UpdateVoidCallback();
+
         public void updatePoem(string str)
         {
             ContentTextBoxPoem.Text = str;
@@ -43,12 +52,71 @@ namespace Projekt_SI_GUI
 
         private void generatePoem(object sender, RoutedEventArgs e)
         {
+            poemButtonStop.IsEnabled = true;
+
+            poemButton.IsEnabled = false;
+            optionsButton.IsEnabled = false;
+            destPoem.IsEnabled = false;
+            srcPoem.IsEnabled = false;
+            VerseAmout.IsEnabled = false;
+            wordTab.IsEnabled = false;
+            poemTab.IsEnabled = false;
+            toTextBoxPoem.IsEnabled = false;
+            toFilePoem.IsEnabled = false;
+
+            EnglishPoem.IsEnabled = false;
+            PolishPoem.IsEnabled = false;
+
+            toFilePoem.IsEnabled = false;
+            toTextBoxPoem.IsEnabled = false;
+            verseChecker.IsEnabled = false;
+            letterChecker.IsEnabled = false;
+            identChecker.IsEnabled = false;
+            rhymeChecker.IsEnabled = false;
+
+            Console.WriteLine((bool)rhymeChecker.IsChecked);
+            sentenceRoot.setChecks( (bool)verseChecker.IsChecked,
+                                    (bool)letterChecker.IsChecked,
+                                    (bool)rhymeChecker.IsChecked,
+                                    (bool)identChecker.IsChecked );
+
             int x;
             Int32.TryParse(VerseAmout.Text, out x);
-            Task.Run(() => sentenceRoot.generatePoem(x));
+            Task.Run(() => sentenceRoot.generatePoem(x, polish));
 
             //sentenceRoot.generatePoem(8, 7, 2);
             //await Task.Factory.StartNew(() => sentenceRoot.generatePoem(8, 7, 2));
+        }
+
+        private void stopPoem(object sender, RoutedEventArgs e)
+        {
+            unlockEverything();
+            sentenceRoot.stop();
+        }
+
+        public void unlockEverything() {
+
+            poemButtonStop.IsEnabled = false;
+
+            poemButton.IsEnabled = true;
+            optionsButton.IsEnabled = true;
+            destPoem.IsEnabled = true;
+            srcPoem.IsEnabled = true;
+            VerseAmout.IsEnabled = true;
+            wordTab.IsEnabled = true;
+            poemTab.IsEnabled = true;
+            toTextBoxPoem.IsEnabled = true;
+            toFilePoem.IsEnabled = true;
+
+            EnglishPoem.IsEnabled = true;
+            PolishPoem.IsEnabled = true;
+
+            toFilePoem.IsEnabled = true;
+            toTextBoxPoem.IsEnabled = true;
+            verseChecker.IsEnabled = true;
+            letterChecker.IsEnabled = true;
+            identChecker.IsEnabled = true;
+            rhymeChecker.IsEnabled = true;
         }
 
         private void Button_Chose(object sender, RoutedEventArgs e)
@@ -90,6 +158,8 @@ namespace Projekt_SI_GUI
 
             //System.Console.WriteLine("wordAmount = " + wordAmount);
         }
+
+        Task writePoem;
 
         private int wordAmount = 0;   // z tąd bierzcie liczbę słów do wygeneroeania
         private string sSelectedPath; // ścieżka do pliku źródłowego
@@ -150,10 +220,10 @@ namespace Projekt_SI_GUI
                     dPoemSelectedPath = dlg.SelectedPath;
                     dPoemFilePath.Text = dlg.SelectedPath;
                 }
-                else if (btn.Name.ToString() == "destPoem2") {
+                /*else if (btn.Name.ToString() == "destPoem2") {
                     dPoemSelectedPath2 = dlg.SelectedPath;
                     dPoemFilePath2.Text = dlg.SelectedPath;
-                }
+                }*/
             }
         }
 

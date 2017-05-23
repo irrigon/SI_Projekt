@@ -60,6 +60,25 @@ namespace SI_Projekt {
             return Math.Min(Math.Max(0,result),s.Length-3);
         }
 
+        public static int LastVowelsWeak(this string s) {
+            // Słabsza wersja, dla polskich słów.
+            // Jan Grzywacz.
+
+            int result = 0;
+            bool found = false;
+            for (int i = Math.Max(0,s.Length-1); i >= 0; i--) {
+                if ("aeiouąęóy".IndexOf(s[i].ToString(), StringComparison.InvariantCultureIgnoreCase) >= 0)
+                    found = true;
+                else if (found) {
+                    result = i + 1;
+                    break;
+                }
+            }
+
+            //if ((result == s.Length - 1) && (result > 0)) result--;
+            return Math.Min(Math.Max(0,result),s.Length-3);
+        }
+
         public static int LastVowelsOLD(this string s) {
             // Zwraca indeks ostatniej zbitki samogłosek.
             // Jan Grzywacz.
