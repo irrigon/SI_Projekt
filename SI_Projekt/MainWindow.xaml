@@ -26,7 +26,7 @@
                     <Label Content="Plik docelowy:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="25,321,0,0" Width="166"/>
                 </Grid>
             </TabItem>
-            <TabItem Header="Wiersze">
+            <TabItem Header="Wiersze" HorizontalAlignment="Left" Margin="-1.8,-2,-1.6,0" Width="57">
                 <Grid Background="#FFE5E5E5" Height="476" Width="894">
                     <Label Content="Plik źrółowy:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="25,10,0,0" Width="166"/>
                     <TextBox x:Name="sPoemFilePath" HorizontalAlignment="Left" Height="23" TextWrapping="NoWrap" Text="" VerticalAlignment="Top" Width="120" Margin="21,36,0,0" />
@@ -49,10 +49,11 @@
                     <TextBox x:Name="dPoemFilePath2" HorizontalAlignment="Left" Height="23" TextWrapping="NoWrap" Text="" VerticalAlignment="Top" Width="120" Margin="21,330,0,0" />
                     <Button Content="Wybierz" HorizontalAlignment="Left" Margin="146,331,0,0" VerticalAlignment="Top" Width="75" RenderTransformOrigin="0.213,-0.182" Click="Button_Chose_Poem" x:Name="destPoem2"/>
                     <Button Content="Ustawienia zaawansowane" HorizontalAlignment="Left" Margin="21,388,0,0" VerticalAlignment="Top" Width="200" Click="Button_AdvencedSettings" />
+                    <Button x:Name="poemButton" Content="Generuj" HorizontalAlignment="Left" Margin="79,428,0,0" VerticalAlignment="Top" Width="75" Click="generatePoem"/>
                 </Grid>
             </TabItem>
         </TabControl>
-        <Label Content="Autorzy:  Jakub Grajkowski xxxxxx,  Jan Grzywacz xxxxxx,  Michał Brzózka 160283" HorizontalAlignment="Left" Margin="28,548,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.842,2.038" Width="581"/>
+        <Label Content="Autorzy:  Jakub Grajkowski xxxxxx,  Jan Grzywacz 160466,  Michał Brzózka 160283" HorizontalAlignment="Left" Margin="28,548,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.842,2.038" Width="581"/>
 
     </Grid>
 </Window>

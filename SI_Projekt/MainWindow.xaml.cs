@@ -1,4 +1,7 @@
-﻿using System;
+﻿
+using System;
+using System.Diagnostics;
+using System.Threading;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,6 +16,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
+using SI_Projekt;
 
 namespace Projekt_SI_GUI
 {
@@ -26,6 +30,19 @@ namespace Projekt_SI_GUI
             InitializeComponent();
             ContentTextBox.Text = "do tego pola przypisujcie wygenerowane słowa";
             ContentTextBoxPoem.Text = "do tego pola przypisujcie wygenerowane wiersze";
+        }
+
+        public delegate void UpdateTextCallback(string message);
+        public void updatePoem(string str)
+        {
+            ContentTextBoxPoem.Text = str;
+        }
+
+        private void generatePoem(object sender, RoutedEventArgs e)
+        {
+            //sentenceRoot.generatePoem(8, 7, 2);
+            Task.Run(() => sentenceRoot.generatePoem(8, 7, 2));
+            //await Task.Factory.StartNew(() => sentenceRoot.generatePoem(8, 7, 2));
         }
 
         private void Button_Chose(object sender, RoutedEventArgs e)
@@ -148,6 +165,14 @@ namespace Projekt_SI_GUI
         {
             var advancedSettings = new AdvancedSettings();
             advancedSettings.Show();
+        }
+
+        SentenceNode sentenceRoot;
+
+        public void setSentenceRoot(SentenceNode s)
+        {
+            Debug.WriteLine("Ustawiono SentenceNode");
+            sentenceRoot = s;
         }
     }
 }

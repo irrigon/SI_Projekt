@@ -1,11 +1,11 @@
 ﻿
 using System;
 using System.IO;
+using System.Threading;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System;
 
 using Projekt_SI_GUI;
 
@@ -14,13 +14,28 @@ namespace SI_Projekt{
         [STAThread]
         static void Main(string[] args){
             
-            /*Sylabizator.Sylabizator sylabizator = new Sylabizator.Sylabizator();
+            // Inicjalizacja okna.
+            App app = new App();
+            MainWindow mainWindow = new MainWindow();
 
+            // Nowy sylabizator.
+            Sylabizator.Sylabizator sylabizator = new Sylabizator.Sylabizator();
+
+            // Elementry do tworzenia zdań.
+            SentenceNode sentenceRoot = new SentenceNode("NULL", sylabizator, mainWindow);
+            sentenceRoot.teach("english_sentences.txt");
+            mainWindow.setSentenceRoot(sentenceRoot);
+
+            // The point of no return:
+            app.Run(mainWindow);
+
+            // Jednorazowe przetwarzania plików:
             //findAllEnglishSentences(100);
             //findAllPolishSentences(12);
             //cutStrangeWords();
 
-            Nodev2 root = new Nodev2(' ');
+            // Generacja słów:
+            /*Nodev2 root = new Nodev2(' ');
             root.createGraph();
             root.teach();
             string[] results = new string[100];
@@ -31,6 +46,7 @@ namespace SI_Projekt{
 
             Console.Write("\n");
 
+            // Generacja zdań:
             SentenceNode sentenceRoot = new SentenceNode("NULL",sylabizator);
             //sylabizator.Model.updateLanguage(Sylabizator.SylabizatorLanguage.Polish);
             sentenceRoot.teach("english_sentences.txt");
@@ -43,6 +59,7 @@ namespace SI_Projekt{
 
             //sentenceRoot.teachRandomWords("strange_words.txt", 50);
 
+            // Generacja wiersszy:
             //List<string> poem = sentenceRoot.generatePoem(4, 15, 4);
             List<string> poem = sentenceRoot.generatePoem(8, 7, 2);
             //List<string> poem = sentenceRoot.generatePoem(9, 4, 3);
@@ -56,7 +73,6 @@ namespace SI_Projekt{
             Console.WriteLine("\nFinished.");
             Console.ReadKey();*/
 
-            new App().Run(new MainWindow());
             return;
         }
 

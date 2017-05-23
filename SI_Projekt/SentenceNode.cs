@@ -6,9 +6,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using Projekt_SI_GUI;
+
 namespace SI_Projekt
 {
-    class SentenceNode
+    public class SentenceNode
     {
         // Klasa tworząca zdania ze słów, na takiej samej zasadzie jak NodeV2.
         // Jedyna różnica jest taka, że liczby i suma wszystkich słów potomnych
@@ -33,6 +35,12 @@ namespace SI_Projekt
             this.sylabizator = sylabizator;
             this.word = word;
             this.total = 0;
+        }
+        
+        public SentenceNode
+            (string word, Sylabizator.Sylabizator sylabizator, MainWindow window) : this(word, sylabizator) {
+            // Uzupełniony konstruktor z oknem dialogowym.
+            this.window = window;
         }
 
         public void teach(string path) {
@@ -129,7 +137,7 @@ namespace SI_Projekt
 
             if ((length <= 0) || (syllables <= 0)) return null;
 
-            List<string> poem = new List<string>();
+            poem = new List<string>();
             currentRhymeWords = new Stack<string>();
             maxRhymeLife = life;
             rhymeLife = 0;
@@ -174,6 +182,9 @@ namespace SI_Projekt
                     if (i == 0) maxLetters = verse.Length;
                     Console.Write("("+poem.Count+")");
                     poem.Add(verse);
+
+                    // Wyświetlanie stanu wierszy w oknie.
+                    updateWindowText(poem,"");
                 }
             }
 
@@ -291,6 +302,9 @@ namespace SI_Projekt
                         syllablesLeft -= syllables.Length;
                         lastWord = newWord;
                     }
+
+                    // Wyświetlanie stanu wierszy w oknie.
+                    updateWindowText(poem,result);
                 }
 
                 // Finalizacja i walidacja zdania.
@@ -561,13 +575,28 @@ namespace SI_Projekt
                 children[i].unmarkAll();
             }
         }
+        
+        protected string joinStrings(string str1, string str2) {
+            return str1 + "\n" + str2;
+        }
 
+        MainWindow window;
+
+        protected void updateWindowText(List<string> text, string tmp) {
+            if ((window != null) && (text.Count > 0))
+                window.ContentTextBoxPoem.Dispatcher.Invoke(
+                    new MainWindow.UpdateTextCallback(window.updatePoem),
+                        new object[] { text.Aggregate(joinStrings)+"\n"+tmp });
+        }
+        
         protected Random rand = new Random();
         protected string word { get; }
         protected int total { get; set; }
         protected List<int> counters { get; set; }
         protected List<bool> marked { get; set; }
         protected List<SentenceNode> children { get; set; }
+
+        List<string> poem;
 
         bool touched = false;
 
