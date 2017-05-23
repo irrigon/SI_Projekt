@@ -1,15 +1,20 @@
-﻿using System;
+﻿
+using System;
 using System.IO;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System;
+
+using Projekt_SI_GUI;
 
 namespace SI_Projekt{
     class Program{
+        [STAThread]
         static void Main(string[] args){
-
-            Sylabizator.Sylabizator sylabizator = new Sylabizator.Sylabizator();
+            
+            /*Sylabizator.Sylabizator sylabizator = new Sylabizator.Sylabizator();
 
             //findAllEnglishSentences(100);
             //findAllPolishSentences(12);
@@ -49,7 +54,9 @@ namespace SI_Projekt{
             }
 
             Console.WriteLine("\nFinished.");
-            Console.ReadKey();
+            Console.ReadKey();*/
+
+            new App().Run(new MainWindow());
             return;
         }
 

@@ -10,3 +10,11 @@ D:\School\2017_SI\SI_Projekt\SI_Projekt\obj\Debug\SI_Projekt.pdb
 D:\School\2017_SI\SI_Projekt\SI_Projekt\bin\Debug\SI_Projekt.exe
 D:\School\2017_SI\SI_Projekt\SI_Projekt\bin\Debug\SI_Projekt.pdb
 D:\School\2017_SI\SI_Projekt\SI_Projekt\obj\Debug\SI_Projekt.csprojResolveAssemblyReference.cache
+D:\School\2017_SI\SI_Projekt\SI_Projekt\obj\Debug\AdvancedSettings.baml
+D:\School\2017_SI\SI_Projekt\SI_Projekt\obj\Debug\App.baml
+D:\School\2017_SI\SI_Projekt\SI_Projekt\obj\Debug\MainWindow.baml
+D:\School\2017_SI\SI_Projekt\SI_Projekt\obj\Debug\AdvancedSettings.g.cs
+D:\School\2017_SI\SI_Projekt\SI_Projekt\obj\Debug\App.g.cs
+D:\School\2017_SI\SI_Projekt\SI_Projekt\obj\Debug\MainWindow.g.cs
+D:\School\2017_SI\SI_Projekt\SI_Projekt\obj\Debug\SI_Projekt_MarkupCompile.cache
+D:\School\2017_SI\SI_Projekt\SI_Projekt\obj\Debug\SI_Projekt.g.resources
