@@ -1,0 +1,58 @@
+﻿<Window x:Class="Projekt_SI_GUI.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        
+        Title="Generator słów" Height="620.167" Width="966">
+    <Grid>
+        <TabControl HorizontalAlignment="Left" Height="508" VerticalAlignment="Top" Width="904" Margin="28,26,0,0">
+            <TabItem Header="Słowa" HorizontalAlignment="Right" Width="49">
+                <Grid Background="#FFE5E5E5">
+                    <Label Content="Plik źrółowy:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="25,43,0,0" Width="166"/>
+                    <TextBox x:Name="sFilePath" HorizontalAlignment="Left" Height="23" TextWrapping="NoWrap" Text="" VerticalAlignment="Top" Width="120" Margin="25,69,0,0" />
+                    <Button Content="Wybierz" HorizontalAlignment="Left" Margin="150,69,0,0" VerticalAlignment="Top" Width="75" RenderTransformOrigin="0.213,-0.182" Click="Button_Chose" Name="src"/>
+                    <StackPanel>
+                        <RadioButton Content="polskich" HorizontalAlignment="Left" Margin="40,135,0,0" VerticalAlignment="Top" Height="19" Checked="RadioButton_Language" Name="Polish"/>
+                        <RadioButton Content="angielskich" HorizontalAlignment="Left" Margin="40,5,0,0" VerticalAlignment="Top" Height="22" Checked="RadioButton_Language" Name="English"/>
+                    </StackPanel>
+                    <Label Content="Generowanie słów:" HorizontalAlignment="Left" Margin="25,107,0,0" VerticalAlignment="Top" Width="129"/>
+                    <TextBox x:Name="WordAmout" HorizontalAlignment="Left" Height="23" Margin="25,222,0,0" TextWrapping="Wrap" Text="10" VerticalAlignment="Top" Width="120" TextChanged="getAmout_TextChanged"/>
+                    <Label Content="Liczba słów:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="25,196,0,0" Width="120"></Label>
+                    <TextBox ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                ScrollViewer.VerticalScrollBarVisibility="Visible" Margin="272,10,10,10" x:Name="ContentTextBox"/>
+                    <CheckBox Content="Wypisz =&gt;" HorizontalAlignment="Left" Margin="44,272,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.154,-1.188" Checked="CheckBox_Destination" Name="toTextBox" Unchecked="UnchckedDestiantion"/>
+                    <CheckBox Content="Zapisz do pliku" HorizontalAlignment="Left" Margin="44,293,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.154,-1.188" Checked="CheckBox_Destination" Name="toFile" Unchecked="UnchckedDestiantion"/>
+                    <TextBox x:Name="dFilePath" HorizontalAlignment="Left" Height="23" TextWrapping="NoWrap" Text="" VerticalAlignment="Top" Width="120" Margin="25,347,0,0"/>
+                    <Button Content="Wybierz" HorizontalAlignment="Left" Margin="150,348,0,0" VerticalAlignment="Top" Width="75" RenderTransformOrigin="0.213,-0.182" Click="Button_Chose" Name="dest"/>
+                    <Label Content="Plik docelowy:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="25,321,0,0" Width="166"/>
+                </Grid>
+            </TabItem>
+            <TabItem Header="Wiersze">
+                <Grid Background="#FFE5E5E5" Height="476" Width="894">
+                    <Label Content="Plik źrółowy:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="25,10,0,0" Width="166"/>
+                    <TextBox x:Name="sPoemFilePath" HorizontalAlignment="Left" Height="23" TextWrapping="NoWrap" Text="" VerticalAlignment="Top" Width="120" Margin="21,36,0,0" />
+                    <Button Content="Wybierz" HorizontalAlignment="Left" Margin="146,36,0,0" VerticalAlignment="Top" Width="75" RenderTransformOrigin="0.213,-0.182" Click="Button_Chose_Poem" Name="srcPoem"/>
+                    <StackPanel>
+                        <RadioButton Content="polskich" HorizontalAlignment="Left" Margin="40,90,0,0" VerticalAlignment="Top" Height="19" Checked="RadioButton_Language" x:Name="PolishPoem" RenderTransformOrigin="0.475,-2.053"/>
+                        <RadioButton Content="angielskich" HorizontalAlignment="Left" Margin="40,5,0,0" VerticalAlignment="Top" Height="22" Checked="RadioButton_Language" x:Name="EnglishPoem"/>
+                    </StackPanel>
+                    <Label Content="Generowanie wierszy:" HorizontalAlignment="Left" Margin="25,64,0,0" VerticalAlignment="Top" Width="129" RenderTransformOrigin="0.55,-1.077"/>
+                    <TextBox x:Name="VerseAmout" HorizontalAlignment="Left" Height="23" Margin="25,166,0,0" TextWrapping="Wrap" Text="10" VerticalAlignment="Top" Width="120" TextChanged="getAmout_TextChanged"/>
+                    <Label Content="Liczba wersów:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="21,140,0,0" Width="120"/>
+                    <TextBox ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+            		ScrollViewer.VerticalScrollBarVisibility="Visible" Margin="272,10,10,10" x:Name="ContentTextBoxPoem"/>
+                    <CheckBox Content="Wypisz =&gt;" HorizontalAlignment="Left" Margin="44,203,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.154,-1.188" Checked="CheckBox_DestinationPoem" x:Name="toTextBoxPoem" Unchecked="UnheckBox_DestinationPoem"/>
+                    <CheckBox Content="Zapisz do pliku" HorizontalAlignment="Left" Margin="44,224,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.154,-1.188" Checked="CheckBox_DestinationPoem" x:Name="toFilePoem" Unchecked="UnheckBox_DestinationPoem"/>
+                    <TextBox x:Name="dPoemFilePath" HorizontalAlignment="Left" Height="23" TextWrapping="NoWrap" Text="" VerticalAlignment="Top" Width="120" Margin="21,271,0,0" />
+                    <Button Content="Wybierz" HorizontalAlignment="Left" Margin="146,272,0,0" VerticalAlignment="Top" Width="75" RenderTransformOrigin="0.213,-0.182" Click="Button_Chose_Poem" x:Name="destPoem"/>
+                    <Label Content="Plik docelowy:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="25,245,0,0" Width="166"/>
+                    <Label Content="Plik docelowy 2:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="25,304,0,0" Width="166"/>
+                    <TextBox x:Name="dPoemFilePath2" HorizontalAlignment="Left" Height="23" TextWrapping="NoWrap" Text="" VerticalAlignment="Top" Width="120" Margin="21,330,0,0" />
+                    <Button Content="Wybierz" HorizontalAlignment="Left" Margin="146,331,0,0" VerticalAlignment="Top" Width="75" RenderTransformOrigin="0.213,-0.182" Click="Button_Chose_Poem" x:Name="destPoem2"/>
+                    <Button Content="Ustawienia zaawansowane" HorizontalAlignment="Left" Margin="21,388,0,0" VerticalAlignment="Top" Width="200" Click="Button_AdvencedSettings" />
+                </Grid>
+            </TabItem>
+        </TabControl>
+        <Label Content="Autorzy:  Jakub Grajkowski xxxxxx,  Jan Grzywacz xxxxxx,  Michał Brzózka 160283" HorizontalAlignment="Left" Margin="28,548,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.842,2.038" Width="581"/>
+
+    </Grid>
+</Window>
