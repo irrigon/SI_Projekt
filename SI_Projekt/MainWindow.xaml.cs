@@ -1,5 +1,6 @@
 ﻿
 using System;
+using System.IO;
 using System.Diagnostics;
 using System.Threading;
 using System.Collections.Generic;
@@ -87,6 +88,8 @@ namespace Projekt_SI_GUI
             return str1 + "\n" + str2;
         }
 
+        System.Windows.Threading.DispatcherTimer dispatcherTimer;
+        DateTime timerStart;
         private void generatePoem(object sender, RoutedEventArgs e)
         {
             lockEverything();
@@ -108,8 +111,6 @@ namespace Projekt_SI_GUI
             //await Task.Factory.StartNew(() => sentenceRoot.generatePoem(8, 7, 2));
         }
 
-        System.Windows.Threading.DispatcherTimer dispatcherTimer;
-        DateTime timerStart;
         private void dispatcherTimer_Tick(object sender, EventArgs e)
         {
             timerPoem.Text = (DateTime.Now.Subtract(timerStart)).ToString("mm\\:ss\\:ff");
@@ -120,6 +121,16 @@ namespace Projekt_SI_GUI
             dispatcherTimer.Stop();
             unlockEverything();
             sentenceRoot.stop();
+        }
+
+        private void generateWords(object sender, RoutedEventArgs e)
+        {
+            lockEverythingInWords();
+        }
+
+        private void stopWords(object sender, RoutedEventArgs e)
+        {
+            unlockEverythingInWords();
         }
 
         public void lockEverything() {
@@ -180,18 +191,57 @@ namespace Projekt_SI_GUI
             rhymeChecker.IsEnabled = true;
         }
 
+        public void lockEverythingInWords()
+        {
+            wordButtonStop.IsEnabled = true;
+            wordButton.IsEnabled = false;
+
+            src.IsEnabled = false;
+            dest.IsEnabled = false;
+            toFile.IsEnabled = false;
+            WordAmout.IsEnabled = false;
+            toTextBox.IsEnabled = false;
+            englishWordsRadio.IsEnabled = false;
+            polishWordsRadio.IsEnabled = false;
+            wordTab.IsEnabled = false;
+            poemTab.IsEnabled = false;
+        }
+
+        public void unlockEverythingInWords()
+        {
+            wordButtonStop.IsEnabled = false;
+            wordButton.IsEnabled = true;
+
+            src.IsEnabled = true;
+            dest.IsEnabled = true;
+            toFile.IsEnabled = true;
+            WordAmout.IsEnabled = true;
+            toTextBox.IsEnabled = true;
+            englishWordsRadio.IsEnabled = true;
+            polishWordsRadio.IsEnabled = true;
+            wordTab.IsEnabled = true;
+            poemTab.IsEnabled = true;
+        }
+
         private void Button_Chose(object sender, RoutedEventArgs e)
         {
             Button btn = sender as Button;
-            var dlg = new System.Windows.Forms.FolderBrowserDialog() { Description = "Select directory to open" };
 
-            if (dlg.ShowDialog() == System.Windows.Forms.DialogResult.OK){
-                if (btn.Name.ToString() == "src") {
-                    sSelectedPath = dlg.SelectedPath;
+            if (btn.Name.ToString() == "src")
+            {
+                var dlg = new System.Windows.Forms.OpenFileDialog() { Filter = "TXT files|*.txt" };
+                if (dlg.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                {
+                    sSelectedPath = dlg.FileName;
                     sFilePath.Text = sSelectedPath;
                 }
-                else if (btn.Name.ToString() == "dest") {
-                    dSelectedPath = dlg.SelectedPath;
+            }
+            else if (btn.Name.ToString() == "dest")
+            {
+                var dlg = new System.Windows.Forms.SaveFileDialog() { Filter = "TXT files|*.txt" };
+                if (dlg.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                {
+                    dSelectedPath = dlg.FileName;
                     dFilePath.Text = dSelectedPath;
                 }
             }
@@ -205,8 +255,14 @@ namespace Projekt_SI_GUI
             else if (rdo.Name.ToString() == "English") {
                 polish = false;
             }
+            else if (rdo.Name.ToString() == "PolishpolishWordsRadio") {
+                polishWords = true;
+            }
+            else if (rdo.Name.ToString() == "englishWordsRadio") {
+                polishWords = false;
+            }
         }
-
+        
         private void RadioButton_Poem_File(object sender, RoutedEventArgs e)
         {
             RadioButton rdo = sender as RadioButton;
@@ -248,6 +304,7 @@ namespace Projekt_SI_GUI
         private int verseAmount = 0;
         private string sPoemSelectedPath;
         private bool polishPoem = true;
+        private bool polishWords = true;
         private string dPoemSelectedPath;
         private string dPoemSelectedPath2;
         private bool writePoemToFile = false;
@@ -364,5 +421,58 @@ namespace Projekt_SI_GUI
         {
 
         }
+
+        
+        //////////////////////////////////////////////////
+
+
+        void createNewWords(
+            int amount = 10000, int level = 2, string fileName = "CreatedWords.txt")
+        {
+            Nodev2 root = new Nodev2(' ');
+            root.createGraph(level);
+            root.teach(level);
+
+            string[] results = new string[amount];
+            for (int i = 0; i < amount; i++)
+                results[i] = root.generateNewWord(level);
+
+            try
+            {
+                File.WriteAllLines(fileName, results);
+            }
+            catch (IOException e)
+            {
+                Console.Error.WriteLine("Error");
+            }
+        }
+
+        /*void createPoem(
+            int numberOfLine = 16, string poemFile = "Poem.txt", string wordsFile = "CreatedWords.txt")
+        {
+            Poem poem = new Poem(wordsFile);
+            poem.createPoem(numberOfLine, poemFile);
+        }
+
+        static void createNewWordsPolish(
+            int amount = 10000, int level = 2, string fileName = "CreatedWordsPolish.txt")
+        {
+            NodePl root = new NodePl(' ');
+            root.createGraph(level);
+            root.teach(level);
+
+            string[] result = new string[amount];
+            for (int i = 0; i < amount; i++)
+                result[i] = root.generateNewWord(level);
+
+            try
+            {
+                File.WriteAllLines(fileName, result);
+            }
+            catch (IOException e)
+            {
+                Console.Error.WriteLine("Error!");
+            }
+        }*/
     }
 }
