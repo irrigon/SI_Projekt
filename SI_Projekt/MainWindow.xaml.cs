@@ -40,6 +40,11 @@ namespace Projekt_SI_GUI
             identChecker.IsChecked = true;
             rhymeChecker.IsChecked = true;
 
+            wordButtonStop.IsEnabled = false;
+            wordButton.IsEnabled = false;
+
+            wordsProg = new SubProgram(this);
+
             //ContentTextBox.Text = "do tego pola przypisujcie wygenerowane słowa";
             //ContentTextBoxPoem.Text = "do tego pola przypisujcie wygenerowane wiersze";
         }
@@ -81,6 +86,22 @@ namespace Projekt_SI_GUI
         {
             if (loadedPoemFiles.Count == 0) PoemLearnedBox.Text = "";
             else PoemLearnedBox.Text = loadedPoemFiles.Aggregate(joinStrings);
+        }
+
+        public void clearWords()
+        { ContentTextBox.Text = ""; }
+
+        public void addToWords(string str)
+        {
+            if (toTextBox.IsChecked == true)
+                ContentTextBox.AppendText(str);
+            ContentTextBox.ScrollToEnd();
+        }
+
+        public void updateWords(string str)
+        {
+            if (toTextBox.IsChecked == true)
+                ContentTextBox.Text = str;
         }
 
         protected string joinStrings(string str1, string str2)
@@ -125,12 +146,19 @@ namespace Projekt_SI_GUI
 
         private void generateWords(object sender, RoutedEventArgs e)
         {
+            int x = (int)WordAmout.Value;
+            int l = (secondLevel.IsChecked == true) ? 2 : 1;
             lockEverythingInWords();
+            if (polishWords)
+                Task.Run(() => wordsProg.createNewWordsPolish(x, l, sSelectedPath, dSelectedPath));
+            else
+                Task.Run(() => wordsProg.createNewWords(x, l, sSelectedPath, dSelectedPath));
         }
 
         private void stopWords(object sender, RoutedEventArgs e)
         {
             unlockEverythingInWords();
+            wordsProg.stopped = true;
         }
 
         public void lockEverything() {
@@ -201,6 +229,7 @@ namespace Projekt_SI_GUI
             toFile.IsEnabled = false;
             WordAmout.IsEnabled = false;
             toTextBox.IsEnabled = false;
+            secondLevel.IsEnabled = false;
             englishWordsRadio.IsEnabled = false;
             polishWordsRadio.IsEnabled = false;
             wordTab.IsEnabled = false;
@@ -217,6 +246,7 @@ namespace Projekt_SI_GUI
             toFile.IsEnabled = true;
             WordAmout.IsEnabled = true;
             toTextBox.IsEnabled = true;
+            secondLevel.IsEnabled = true;
             englishWordsRadio.IsEnabled = true;
             polishWordsRadio.IsEnabled = true;
             wordTab.IsEnabled = true;
@@ -234,6 +264,7 @@ namespace Projekt_SI_GUI
                 {
                     sSelectedPath = dlg.FileName;
                     sFilePath.Text = sSelectedPath;
+                    wordButton.IsEnabled = true;
                 }
             }
             else if (btn.Name.ToString() == "dest")
@@ -289,7 +320,7 @@ namespace Projekt_SI_GUI
             //System.Console.WriteLine("wordAmount = " + wordAmount);
         }
 
-        Task writePoem;
+        SubProgram wordsProg;
 
         private int wordAmount = 0;   // z tąd bierzcie liczbę słów do wygeneroeania
         private string sSelectedPath; // ścieżka do pliku źródłowego
@@ -422,57 +453,6 @@ namespace Projekt_SI_GUI
 
         }
 
-        
-        //////////////////////////////////////////////////
 
-
-        void createNewWords(
-            int amount = 10000, int level = 2, string fileName = "CreatedWords.txt")
-        {
-            Nodev2 root = new Nodev2(' ');
-            root.createGraph(level);
-            root.teach(level);
-
-            string[] results = new string[amount];
-            for (int i = 0; i < amount; i++)
-                results[i] = root.generateNewWord(level);
-
-            try
-            {
-                File.WriteAllLines(fileName, results);
-            }
-            catch (IOException e)
-            {
-                Console.Error.WriteLine("Error");
-            }
-        }
-
-        /*void createPoem(
-            int numberOfLine = 16, string poemFile = "Poem.txt", string wordsFile = "CreatedWords.txt")
-        {
-            Poem poem = new Poem(wordsFile);
-            poem.createPoem(numberOfLine, poemFile);
-        }
-
-        static void createNewWordsPolish(
-            int amount = 10000, int level = 2, string fileName = "CreatedWordsPolish.txt")
-        {
-            NodePl root = new NodePl(' ');
-            root.createGraph(level);
-            root.teach(level);
-
-            string[] result = new string[amount];
-            for (int i = 0; i < amount; i++)
-                result[i] = root.generateNewWord(level);
-
-            try
-            {
-                File.WriteAllLines(fileName, result);
-            }
-            catch (IOException e)
-            {
-                Console.Error.WriteLine("Error!");
-            }
-        }*/
     }
 }

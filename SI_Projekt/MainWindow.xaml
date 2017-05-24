@@ -17,12 +17,12 @@
                     <Label Content="Plik źrółowy:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="11.2,43,0,0" Width="166" Grid.ColumnSpan="3" Grid.Column="1"/>
                     <TextBox x:Name="sFilePath" HorizontalAlignment="Left" Height="23" TextWrapping="NoWrap" Text="" VerticalAlignment="Top" Width="120" Margin="11.2,69,0,0" Grid.ColumnSpan="2" Grid.Column="1" IsReadOnly="true" />
                     <Button Content="Wybierz" HorizontalAlignment="Left" Margin="80.2,69,0,0" VerticalAlignment="Top" Width="75" RenderTransformOrigin="0.213,-0.182" Click="Button_Chose" Name="src" Grid.Column="2" Grid.ColumnSpan="2"/>
-                    <StackPanel Margin="0,0,0.4,-0.2" Grid.ColumnSpan="4">
+                    <StackPanel Margin="-14,0,0.4,-0.2" Grid.ColumnSpan="4">
                         <RadioButton x:Name="polishWordsRadio" Content="polskich" HorizontalAlignment="Left" Margin="40,135,0,0" VerticalAlignment="Top" Height="19" Checked="RadioButton_Language" IsChecked="true"/>
                         <RadioButton x:Name="englishWordsRadio" Content="angielskich" HorizontalAlignment="Left" Margin="40,5,0,0" VerticalAlignment="Top" Height="22" Checked="RadioButton_Language"/>
                     </StackPanel>
-                    <Label Content="Generowanie słów:" HorizontalAlignment="Left" Margin="11.2,107,0,0" VerticalAlignment="Top" Width="130" Grid.ColumnSpan="2" Grid.Column="1"/>
-                    <wpfTool:DecimalUpDown x:Name="WordAmout" HorizontalAlignment="Left" Height="23" Margin="11.2,222,0,0" Minimum="1" Maximum="1000000" Text="8" VerticalAlignment="Top" Width="120" Grid.ColumnSpan="2" Grid.Column="1"/>
+                    <Label Content="Generowanie słów:" HorizontalAlignment="Left" Margin="1.2,107,0,0" VerticalAlignment="Top" Width="130" Grid.ColumnSpan="2" Grid.Column="1"/>
+                    <wpfTool:DecimalUpDown x:Name="WordAmout" HorizontalAlignment="Left" Height="23" Margin="11.2,222,0,0" Minimum="1" Maximum="1000000" Text="8" VerticalAlignment="Top" Width="98" Grid.ColumnSpan="2" Grid.Column="1"/>
                     <Label Content="Liczba słów:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="11.2,196,0,0" Width="120" Grid.ColumnSpan="2" Grid.Column="1"/>
                     <TextBox ScrollViewer.HorizontalScrollBarVisibility="Disabled" IsReadOnly="true"
                 ScrollViewer.VerticalScrollBarVisibility="Visible" Margin="83.7,10,8.4,9.8" x:Name="ContentTextBox" Grid.Column="3"/>
@@ -33,6 +33,8 @@
                     <Label Content="Plik docelowy:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="11.2,321,0,0" Width="166" Grid.ColumnSpan="3" Grid.Column="1"/>
                     <Button x:Name="wordButton" Content="Generuj" HorizontalAlignment="Left" Margin="11.2,440,0,0" VerticalAlignment="Top" Width="75" Click="generateWords" Grid.ColumnSpan="2" Grid.Column="1"/>
                     <Button x:Name="wordButtonStop" Content="Stop" HorizontalAlignment="Left" Margin="46.2,440,0,0" VerticalAlignment="Top" Width="75" Click="stopWords" Grid.Column="2" Grid.ColumnSpan="2"/>
+                    <Label Content="Łańcuch drugiego stopnia:" VerticalAlignment="Top" Margin="0.2,394,15,0" Grid.ColumnSpan="2" Grid.Column="1"/>
+                    <CheckBox Content="" HorizontalAlignment="Left" Margin="104.2,399,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.154,-1.188" Name="secondLevel"  Grid.ColumnSpan="2" Grid.Column="2"/>
                 </Grid>
             </TabItem>
             <TabItem x:Name="poemTab" Header="Wiersze" HorizontalAlignment="Left" Margin="-1.8,-2,-1.6,0" Width="57">
