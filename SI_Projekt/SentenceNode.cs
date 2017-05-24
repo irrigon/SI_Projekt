@@ -75,9 +75,11 @@ namespace SI_Projekt
             else sentences = System.IO.File.ReadAllLines(
                     Path.Combine(Environment.CurrentDirectory, path));
 
-            foreach (string sentence in sentences)
+            foreach (string sentence in sentences) {
                 for (int i = 0; i < dispersion; i++)
-                    teachNewSingleWord(sentence,power);
+                    teachNewSingleWord(sentence, power);
+                addToWindowText(word);
+            }
 
             for (int i = 0; i < children.Count; i++) {
                 //if (counters[i] > 0) Console.WriteLine(children[i].word + " " + counters[i] + "/" + total);
@@ -221,6 +223,14 @@ namespace SI_Projekt
             else sylabizator.Model.updateLanguage(Sylabizator.SylabizatorLanguage.English);
 
             return generatePoem(length,syllablesInVerse,maxRhymeLife);
+        }
+
+        public List<string> generatePoem(int length, bool isPolish, string path)
+        {
+            // Połączone z zapisywaniem.
+            List<string> poem = generatePoem(length, isPolish);
+            System.IO.File.WriteAllLines(path, poem);
+            return poem;
         }
 
         protected string generateNewVerse(int maxSyllables, int maxLetters) {
@@ -491,12 +501,10 @@ namespace SI_Projekt
             if (victim.word == "NULL") victim = this;
             
             SentenceNode newChild = addNewWord(word, 0);
-            victim.appendChild(newChild);
+            victim.appendChild(newChild, power);
 
             SentenceNode anotherVictim = totallyRandomChild();
-            newChild.appendChild(anotherVictim);
-
-            addToWindowText(word);
+            newChild.appendChild(anotherVictim, power);
         }
 
         protected SentenceNode addNewWord(string newWord, int counterAdd) {

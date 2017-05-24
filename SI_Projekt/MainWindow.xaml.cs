@@ -67,6 +67,7 @@ namespace Projekt_SI_GUI
         {
             if (toTextBoxPoem.IsChecked == true)
                 ContentTextBoxPoem.AppendText(str);
+            ContentTextBoxPoem.ScrollToEnd();
         }
 
         public void updatePoem(string str)
@@ -99,7 +100,9 @@ namespace Projekt_SI_GUI
 
             int x;
             Int32.TryParse(VerseAmout.Text, out x);
-            Task.Run(() => sentenceRoot.generatePoem(x, polish));
+            if ((toFilePoem.IsChecked == true) && (dPoemSelectedPath.Length > 0))
+                Task.Run(() => sentenceRoot.generatePoem(x, polish, dPoemSelectedPath));
+            else Task.Run(() => sentenceRoot.generatePoem(x, polish));
 
             //sentenceRoot.generatePoem(8, 7, 2);
             //await Task.Factory.StartNew(() => sentenceRoot.generatePoem(8, 7, 2));
@@ -133,6 +136,9 @@ namespace Projekt_SI_GUI
             toTextBoxPoem.IsEnabled = false;
             toFilePoem.IsEnabled = false;
             PoemReset.IsEnabled = false;
+            loadPoemFile.IsEnabled = false;
+            SentencePoem.IsEnabled = false;
+            WordPoem.IsEnabled = false;
 
             EnglishPoem.IsEnabled = false;
             PolishPoem.IsEnabled = false;
@@ -159,6 +165,9 @@ namespace Projekt_SI_GUI
             toTextBoxPoem.IsEnabled = true;
             toFilePoem.IsEnabled = true;
             PoemReset.IsEnabled = true;
+            loadPoemFile.IsEnabled = true;
+            SentencePoem.IsEnabled = true;
+            WordPoem.IsEnabled = true;
 
             EnglishPoem.IsEnabled = true;
             PolishPoem.IsEnabled = true;
@@ -190,23 +199,24 @@ namespace Projekt_SI_GUI
 
         private void RadioButton_Language(object sender, RoutedEventArgs e){
             RadioButton rdo = sender as RadioButton;
-            if (rdo.Name.ToString() == "SentencePoem") {
-                sentences = true;
+            if (rdo.Name.ToString() == "Polish") {
+                polish = true;
             }
-            else if (rdo.Name.ToString() == "WordPoem"){
-                sentences = false;
+            else if (rdo.Name.ToString() == "English") {
+                polish = false;
             }
         }
+
         private void RadioButton_Poem_File(object sender, RoutedEventArgs e)
         {
             RadioButton rdo = sender as RadioButton;
-            if (rdo.Name.ToString() == "Polish")
-            {
-                polish = true;
+            if (rdo.Name.ToString() == "SentencePoem") {
+                sentences = true;
+                Console.WriteLine("TEST");
             }
-            else if (rdo.Name.ToString() == "English")
-            {
-                polish = false;
+            else if (rdo.Name.ToString() == "WordPoem"){
+                sentences = false;
+                Console.WriteLine("TEST");
             }
         }
 
@@ -306,9 +316,12 @@ namespace Projekt_SI_GUI
         {
             if (sentences) Task.Run(() => sentenceRoot.teach(sPoemSelectedPath, true));
             else Task.Run(() => sentenceRoot.teachRandomWords(sPoemSelectedPath, true));
+
             loadedPoemFiles.Add(System.IO.Path.GetFileName(sPoemSelectedPath));
             ContentTextBoxPoem.Text = "";
+
             lockEverything();
+            poemButtonStop.IsEnabled = false;
             startTimer();
         }
 
@@ -339,7 +352,7 @@ namespace Projekt_SI_GUI
         private void newSentenceRoot(object sender, RoutedEventArgs e)
         {
             var s = sentenceRoot.getSylabizator();
-            sentenceRoot = new SentenceNode("NULL",s);
+            sentenceRoot = new SentenceNode("NULL",s,this);
             loadedPoemFiles.Clear();
             updatePoemFileList();
 

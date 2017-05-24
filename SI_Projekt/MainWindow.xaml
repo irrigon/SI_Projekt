@@ -67,7 +67,7 @@
                     <CheckBox x:Name="letterChecker" Content="Kontroluj ilość liter w wersie." HorizontalAlignment="Left" Margin="21,226,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.154,-1.188" Grid.ColumnSpan="2"/>
                     <CheckBox x:Name="identChecker" Content="Nie pozwalaj na identyczne rymy." HorizontalAlignment="Left" Margin="21,266,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.154,-1.188" Grid.ColumnSpan="2"/>
                     <CheckBox x:Name="rhymeChecker" Content="Włącz znajdywanie rymów." HorizontalAlignment="Left" Margin="21,246,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.154,-1.188" Grid.ColumnSpan="2"/>
-                    <Button Content="Załaduj jako:" HorizontalAlignment="Left" Margin="80.2,70,0,0" VerticalAlignment="Top" Width="90" RenderTransformOrigin="0.55,-1.077" Grid.Column="1" Click="LoadPoemFile"/>
+                    <Button x:Name="loadPoemFile" Content="Załaduj jako:" HorizontalAlignment="Left" Margin="80.2,70,0,0" VerticalAlignment="Top" Width="90" RenderTransformOrigin="0.55,-1.077" Grid.Column="1" Click="LoadPoemFile"/>
                     <TextBox ScrollViewer.HorizontalScrollBarVisibility="Disabled" IsReadOnly="true"
                     	ScrollViewer.VerticalScrollBarVisibility="Visible" Margin="202.2,381,139.4,10" x:Name="PoemLearnedBox" Grid.Column="1"/>
                     <Button x:Name="PoemReset" Content="Zresetuj" HorizontalAlignment="Left" Margin="700.2,447,0,0" VerticalAlignment="Top" Width="90" RenderTransformOrigin="0.55,-1.077" Grid.Column="1" Click="newSentenceRoot"/>
